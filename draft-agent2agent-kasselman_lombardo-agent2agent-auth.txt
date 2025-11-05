@@ -4,8 +4,9 @@
 
 Network Working Group                                          PieterKas
 Internet-Draft                                    Your Organization Here
-Intended status: Informational                           5 November 2025
-Expires: 9 May 2026
+Intended status: Informational                               J. Lombardo
+Expires: 9 May 2026                                                  AWS
+                                                         5 November 2025
 
 
             Agent-to-Agent Authentication and Authorization
@@ -68,7 +69,7 @@ Table of Contents
    4.  IANA Considerations
    5.  Normative References
    Acknowledgments
-   Author's Address
+   Authors' Addresses
 
 1.  Introduction
 
@@ -105,8 +106,14 @@ Acknowledgments
 
    TODO acknowledge.
 
-Author's Address
+Authors' Addresses
 
    PieterKas
    Your Organization Here
    Email: pieter@defakto.security
+
+
+   Jean-François Lombardo
+   AWS
+   Canada
+   Email: jeffsec@amazon.com
