@@ -56,17 +56,23 @@ TODO Introduction
 
 {::boilerplate bcp14-tagged}
 
-# Agent as a workload
+# Agent is a workload
 Key point - for purposes of this document, Agent is a workload that calls an LLM (or similar) and tools in a loop until a terminating condition is met as determined by the LLM or agent. Create a diagram.
 
-# Agent Attestation
-Key point - agent attestation is the equivalent of identiy proofing. there are numerous mechanisms through which this may be achieved, which are deployment and risk specific. Reference WIMSE and SPIFFE approaches here.
+                    LLM
+                     |
+User -> Client -> Agent->Tools->Service->Resources
+
+Tools vs resources - Tools = interface that the LLM can understand and invoke. Abstract interface to the resource.
 
 # Agent Identifier
 Key point - agents must be uniquely identified. Proposal is to use a WIMSE or WIMSE compatible identifier (basicaly a URI). Refer to WIMSE identifier draft.
 
 # Agent Credentials
-Key point - identifier must be bound to a credential. Credentials have expiry dates and additional attributes relevant to the agent. multiple formats are possible. JWTs, X.509 and WITs. Reference SPIFFE, WIMSE. Refer to API keys as an anit pattern.
+Key point - identifier must be bound to a credential. Credentials have expiry dates and additional attributes relevant to the agent. multiple formats are possible. JWTs, X.509 and WITs. Reference SPIFFE, WIMSE. Refer to API keys as an anit pattern. also say something about credential exchange.
+
+# Agent Attestation
+Key point - agent attestation is the equivalent of identiy proofing. there are numerous mechanisms through which this may be achieved, which are deployment and risk specific. Reference WIMSE and SPIFFE approaches here.
 
 # Agent Credential Provisioning
 Key point - credentials are dynamically provisioned at runtime, they are short lived to remove need for expiry management. Provisioning includes initial provisioning and rotation. Refer to SPIFFE and WIMSE.
@@ -83,24 +89,37 @@ WPT, HTTP Sig.
 # Agent Authorization
 Key point - OAuth is broadly supported and provides a delegation model for users to clients (aka agents). Agents can obtain acess tokens directly (client credentials flow, using above authentication methods) or it can be delegated to them by a user (OAuth flows). Make point that the access token includes the client_id, which is the same as the Agent ID (ore related to it) and can be used for authroization decisions, along with other claims in an Access Token (reference JWT Access token spec). Make provision for opaque tokens as well. Discuss Downscoping of agent authorization using transaction tokens. Discuss cross-domain authorization (use cases) and how it may be achieved (identity chaining and cross-domain authorization). Discuss human in the loop authroization. Note concerns, refer to cross-device BCP as examples of consent phishing attacsk. Talk about CIBA as a protocol.
 
+Picture -> Access Token -> Transaction Token -> Domain 1 -> Domain 2
+
 ## Same Domain Authorization
 
-### Agent-to-Tool Authorization
+### Initial Authorization
+User Delegated Authroization Initial authorization - user or agent gets access token.
 
-### Agent-to-Agent Authorization
+### Donwscoped, Time Bount, Context Enriched Agent Authorization
+Transaction Tokens
 
-### User Delegated Authroization
+### Agent-to-Resource Authorization
+Present token, peform additional authorization (RBAC etc?)
+Direct or via tools
+Resources, services.
 
-### Downscoping Agent Authorization
+Agent -> Tool -> Service -> Resource
 
 ### Human-in-the loop
+Agent framework problem -> human in the loop - confirm something that it can already do - agent framework capability - confirmation. Risk management flow.
+Human in the loop - request esalated privelages. Step-up authorization - refernece the draft (maybe)
+
+MCP Elicitation to agent to perform some browser things - start authz code grant flow.
+CIBA
 
 ## Cross Domain Agent-to-Agent Authroization
+Identiyt chaining, ID-Jag.
 
 # Agent Monitoring and Remediation
 Key point - ongoing monitoring and remediation is needed. Use protocols like SSE, CAEP to respond to changes in authorization. Note the need for ongoing logging and audit trails. Talk about end-to-end audit and how this is enabled by having agent identifiers.
 
-# Agent Identity Policy
+# Agent Auhtnetication and Authorization Policy
 Key point - configuration and parameters for all the above constitutes policy. Not stnadardises and not recommended for standrdisation? Perhaps somethign about document format?
 
 # Agent Compliance
