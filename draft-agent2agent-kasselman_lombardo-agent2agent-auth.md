@@ -56,7 +56,7 @@ TODO Introduction
 
 {::boilerplate bcp14-tagged}
 
-# Agent is a workload
+# Agents are workloads
 An Agent is a workload that iteratively interacts with a Large Language Model (LLM) and a set of tools that expose interfaces to underlying services and resources until a terminating condition, determined either by the LLM or by the agent’s internal logic, is reached. It may receive input from a user, or act autonomusly. {{fig-agent-basic}} shows a conceptual model of the AI Agent as a workload.
 
 ~~~ ascii-art
