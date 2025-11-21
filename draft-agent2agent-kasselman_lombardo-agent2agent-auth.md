@@ -36,6 +36,15 @@ author:
     country: Canada
     email: jeffsec@amazon.com
 normative:
+  WIMSE_ID
+    title: WIMSE Identifier
+    target: https://datatracker.ietf.org/doc/draft-ietf-wimse-identifier/
+  
+  SPIFFE:
+    title: Secure Production Identity Framework for Everyone
+    target: https://spiffe.io/docs/latest/spiffe-about/overview/
+    author:
+    - org: Cloud Native Computing Foundation
 
 informative:
 
@@ -88,7 +97,7 @@ An Agent is a workload that iteratively interacts with a Large Language Model (L
 
 As shown in {{fig-agent-basic}}, the AI Agent is a workload that needs and identifier and credentials with which to authenticate itself to the Large Langugage Model and Tools. Once it has authenticated, the Large Langugage Model and Tools must determine if the AI Agent is authorized to access it. If the AI Agent is acting on-behalf-of a User, the User needs to deelegate access to the AI Agent, and the context of the User needs to be preserved to inform authorization decisions.
 
-This document describes how AI Agents should leverage existing standards like SPIFFE, WIMSE, OAuth and SSF.
+This document describes how AI Agents should leverage existing standards defined by SPIFFE {{!SPIFFE}}, WIMSE, OAuth and SSF.
 
 # Agent Identity Management System
 An Agent Identity Management System ensure that the right Agent has access to the right resources and tools at the right time for the right reason. It consists out of the following components:
@@ -104,7 +113,13 @@ An Agent Identity Management System ensure that the right Agent has access to th
 * **Agent Compliance:** Measurement of the state and fucntioning of the system against the stated policies.
 
 # Agent Identifier
-Key point - agents must be uniquely identified. Proposal is to use a WIMSE or WIMSE compatible identifier (basicaly a URI). Refer to WIMSE identifier draft.
+Agents MUST be uniquely identified to enable authentication and authorization. The Secure Production Identity Framework for Everyone (SPIFFE) identifier format is widely deployed and operationally mature. The SPIFFE workload identity model defines a SPIFFE identifier (SPIFFE ID) as a URI of the form spiffe://<trust-domain>/<path> that uniquely identifies a workload within a trust domain {{!SPIFFE}}.
+
+The Workload Identity in Multi-System Environments (WIMSE) working group builds on the experiences gained by the SPIFFE community and defines the WIMSE workload identifier {{WIMSE_ID}} as a URI that uniquely identifies a workload within a given trust domain.
+
+Because SPIFFE IDs are URI-based workload identifiers and their structure aligns with the identifier model defined in the WIMSE identifier draft, all SPIFFE IDs can be treated as valid WIMSE identifiers.
+
+All Agents MUST be assigned a WIMSE identifier, which MAY be a SPIFFE ID. 
 
 # Agent Credentials
 Key point - identifier must be bound to a credential. Credentials have expiry dates and additional attributes relevant to the agent. multiple formats are possible. JWTs, X.509 and WITs. Reference SPIFFE, WIMSE. Refer to API keys as an anit pattern. also say something about credential exchange.
