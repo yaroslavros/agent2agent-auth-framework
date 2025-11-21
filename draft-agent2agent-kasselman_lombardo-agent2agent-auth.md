@@ -57,13 +57,31 @@ TODO Introduction
 {::boilerplate bcp14-tagged}
 
 # Agent is a workload
-Key point - for purposes of this document, Agent is a workload that calls an LLM (or similar) and tools in a loop until a terminating condition is met as determined by the LLM or agent. Create a diagram.
+An Agent is a workload that iteratively interacts with a Large Language Model (LLM) and a set of tools that expose interfaces to underlying services and resources until a terminating condition, determined either by the LLM or by the agent’s internal logic, is reached. It may receive input from a user, or act autonomusly.
 
-                    LLM
-                     |
-User -> Client -> Agent->Tools->Service->Resources
+               +----------------+
+               | Large Language |
+               |   Model (LLM)  |
+               +----------------+
+                     ^   |
+                 (2) |   | (3)
+                     |   v
++--------+       +----------+       +--------+       +-----------+
+|  User  |--(1)->| AI Agent |--(4)->| Tools  |--(5)->| Services  |
+|        |       |          |       |        |       |   and     |
+|        |--(8)->|          |<-(7)--|        |<-(6)--| Resources |
++--------+       +----------+       +--------+       +-----------+
 
-Tools vs resources - Tools = interface that the LLM can understand and invoke. Abstract interface to the resource.
+Figure 1 illustrates the high-level interaction model between the User, the AI Agent, the Large Language Model (LLM), the Tools invoked by the Agent, and the underlying Services and Resources accessed through those Tools. 
+
+1. Optional: The User provides an initial request or instruction to the AI Agent.
+2. The AI Agent forwards the available context to the LLM. Context isimplementation and deployment specific and may include User input, system prompt, tool descriptions, tool outputs and other relevant information.
+3. The LLM returns a response to the AI Agent identifying which tools it should invoke.
+4. Based on the LLM’s output, the AI Agent invokes the relevant Tools. 
+5. The Tools interacts with the underlying Services and Resources required to fulfill the requested operation.
+6. The underlying Services and Resources returns the information requested by the Tools.
+7. The Tools returns the information collected from the Services and Resources to the AI Agent, which sends the information as additional context to the Large Langugage Model, repeating steps 2-7 until the exit condition is reached and the task is completed. 
+8. Optional: Once the exoot condition is reached in step 7, the AI Agent may return a response to the User.
 
 # Agent Identifier
 Key point - agents must be uniquely identified. Proposal is to use a WIMSE or WIMSE compatible identifier (basicaly a URI). Refer to WIMSE identifier draft.
