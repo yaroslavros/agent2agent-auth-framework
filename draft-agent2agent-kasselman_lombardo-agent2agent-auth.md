@@ -91,6 +91,17 @@ As shown in {{fig-arch-basic}}, the AI Agent is a workload that needs and identi
 This document describes how AI Agents should leverage existing standards like SPIFFE, WIMSE, OAuth and SSF.
 
 # Agent Identity Management System
+An Agent Identity Management System ensure that the right Agent has access to the right resources and tools at the right time for the right reason. It consists out of the following components:
+
+* **Agent Identifiers:** Unique identifier assigned to every Agent.
+* **Agent Credentials:** Cryptographic binding between the Agent Identifier and attributes of the Agent.
+* **Agent Attestation:** Mechanisms for determining and assigning the identifier and issue credentials based on measurements of the Agent's environment.
+* **Agent Credential Provisioning:** The mechanism for provisioning credentials to the agent at runtime.
+* **Agent Authentication:** Protocols and mechanisms used by the Agent to authenticate itself to Large Langugage Models or Tools (resource or server) in the system.
+* **Agent Authorization:** Protocols and systems used to determine if an Agent is allowed to access a Large Langugage Model or Tool (resource or server).
+* **Agent Monitoring and Remediation:** Protocols and mechanisms to dynamically modify the authorization decisions based on observed behaviour and system state.
+* **Agent Auhtentication and Authorization Policy:** The configuration and rules for each of the Agent Identity Management System.
+* **Agent Compliance:** Measurement of the state and fucntioning of the system against the stated policies.
 
 # Agent Identifier
 Key point - agents must be uniquely identified. Proposal is to use a WIMSE or WIMSE compatible identifier (basicaly a URI). Refer to WIMSE identifier draft.
@@ -102,7 +113,7 @@ Key point - identifier must be bound to a credential. Credentials have expiry da
 Key point - agent attestation is the equivalent of identiy proofing. there are numerous mechanisms through which this may be achieved, which are deployment and risk specific. Reference WIMSE and SPIFFE approaches here.
 
 # Agent Credential Provisioning
-Key point - credentials are dynamically provisioned at runtime, they are short lived to remove need for expiry management. Provisioning includes initial provisioning and rotation. Refer to SPIFFE and WIMSE.
+Key point - credentials are dynamically provisioned at runtime, they are short lived to remove need for expiry management. Provisioning includes initial provisioning and rotation. Refer to SPIFFE and WIMSE. Maybe hint at using SCIM here?
 
 # Agent Authentication
 Key point - agents may authenticate in a number of ways based on credentials, supported protocols and environment. Distinguish between network and application layer. Refernece WIMSE.
@@ -140,13 +151,13 @@ Human in the loop - request esalated privelages. Step-up authorization - referne
 MCP Elicitation to agent to perform some browser things - start authz code grant flow.
 CIBA
 
-## Cross Domain Agent-to-Agent Authroization
+## Cross Domain Agent-to-Agent Authorization
 Identiyt chaining, ID-Jag.
 
 # Agent Monitoring and Remediation
 Key point - ongoing monitoring and remediation is needed. Use protocols like SSE, CAEP to respond to changes in authorization. Note the need for ongoing logging and audit trails. Talk about end-to-end audit and how this is enabled by having agent identifiers.
 
-# Agent Auhtnetication and Authorization Policy
+# Agent Auhtentication and Authorization Policy
 Key point - configuration and parameters for all the above constitutes policy. Not stnadardises and not recommended for standrdisation? Perhaps somethign about document format?
 
 # Agent Compliance
