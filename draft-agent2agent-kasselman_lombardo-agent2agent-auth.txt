@@ -5,8 +5,8 @@
 Network Working Group                                          PieterKas
 Internet-Draft                                    Your Organization Here
 Intended status: Informational                               J. Lombardo
-Expires: 10 May 2026                                                 AWS
-                                                         6 November 2025
+Expires: 25 May 2026                                                 AWS
+                                                        21 November 2025
 
 
             Agent-to-Agent Authentication and Authorization
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 May 2026.
+   This Internet-Draft will expire on 25 May 2026.
 
 Copyright Notice
 
@@ -74,28 +74,29 @@ Table of Contents
 
    1.  Introduction
    2.  Conventions and Definitions
-   3.  Agent is a workload
-   4.  Agent Identifier
-   5.  Agent Credentials
-   6.  Agent Attestation
-   7.  Agent Credential Provisioning
-   8.  Agent Authentication
-     8.1.  Network layer authentication
-     8.2.  Application layer authentication
-   9.  Agent Authorization
-     9.1.  Same Domain Authorization
-       9.1.1.  Initial Authorization
-       9.1.2.  Donwscoped, Time Bount, Context Enriched Agent
+   3.  Agents are workloads
+   4.  Agent Identity Management System
+   5.  Agent Identifier
+   6.  Agent Credentials
+   7.  Agent Attestation
+   8.  Agent Credential Provisioning
+   9.  Agent Authentication
+     9.1.  Network layer authentication
+     9.2.  Application layer authentication
+   10. Agent Authorization
+     10.1.  Same Domain Authorization
+       10.1.1.  Initial Authorization
+       10.1.2.  Donwscoped, Time Bount, Context Enriched Agent
                Authorization
-       9.1.3.  Agent-to-Resource Authorization
-       9.1.4.  Human-in-the loop
-     9.2.  Cross Domain Agent-to-Agent Authroization
-   10. Agent Monitoring and Remediation
-   11. Agent Auhtnetication and Authorization Policy
-   12. Agent Compliance
-   13. Security Considerations
-   14. IANA Considerations
-   15. Normative References
+       10.1.3.  Agent-to-Resource Authorization
+       10.1.4.  Human-in-the loop
+     10.2.  Cross Domain Agent-to-Agent Authorization
+   11. Agent Monitoring and Remediation
+   12. Agent Auhtentication and Authorization Policy
+   13. Agent Compliance
+   14. Security Considerations
+   15. IANA Considerations
+   16. Normative References
    Acknowledgments
    Authors' Addresses
 
@@ -111,26 +112,119 @@ Table of Contents
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
-3.  Agent is a workload
+3.  Agents are workloads
 
-   Key point - for purposes of this document, Agent is a workload that
-   calls an LLM (or similar) and tools in a loop until a terminating
-   condition is met as determined by the LLM or agent.  Create a
-   diagram.
+   An Agent is a workload that iteratively interacts with a Large
+   Language Model (LLM) and a set of tools that expose interfaces to
+   underlying services and resources until a terminating condition,
+   determined either by the LLM or by the agent’s internal logic, is
+   reached.  It may receive input from a user, or act autonomusly.
+   Figure 1 shows a conceptual model of the AI Agent as a workload.
 
-                   LLM
-                    | User -> Client -> Agent->Tools->Service->Resources
+   Figure 1 illustrates the high-level interaction model between the
+   User, the AI Agent, the Large Language Model (LLM), the Tools invoked
+   by the Agent, and the underlying Services and Resources accessed
+   through those Tools.
 
-   Tools vs resources - Tools = interface that the LLM can understand
-   and invoke.  Abstract interface to the resource.
+                  +----------------+
+                  | Large Language |
+                  |   Model (LLM)  |
+                  +----------------+
+                        ^   |
+                    (2) |   | (3)
+                        |   v
+   +--------+       +------------+       +--------+       +-----------+
+   |  User  |--(1)->| AI Agent   |--(4)->| Tools  |--(5)->| Services  |
+   |        |       | (workload) |       |        |       |   and     |
+   |        |--(8)->|            |<-(7)--|        |<-(6)--| Resources |
+   +--------+       +------------+       +--------+       +-----------+
 
-4.  Agent Identifier
+                      Figure 1: AI Agent as a Workload
+
+   1.  Optional: The User provides an initial request or instruction to
+       the AI Agent.
+
+   2.  The AI Agent forwards the available context to the LLM.  Context
+       isimplementation and deployment specific and may include User
+       input, system prompt, tool descriptions, tool outputs and other
+       relevant information.
+
+   3.  The LLM returns a response to the AI Agent identifying which
+       tools it should invoke.
+
+   4.  Based on the LLM’s output, the AI Agent invokes the relevant
+       Tools.
+
+   5.  The Tools interacts with the underlying Services and Resources
+       required to fulfill the requested operation.
+
+   6.  The underlying Services and Resources returns the information
+       requested by the Tools.
+
+   7.  The Tools returns the information collected from the Services and
+       Resources to the AI Agent, which sends the information as
+       additional context to the Large Langugage Model, repeating steps
+       2-7 until the exit condition is reached and the task is
+       completed.
+
+   8.  Optional: Once the exit condition is reached in step 7, the AI
+       Agent may return a response to the User.
+
+   As shown in Figure 1, the AI Agent is a workload that needs and
+   identifier and credentials with which to authenticate itself to the
+   Large Langugage Model and Tools.  Once it has authenticated, the
+   Large Langugage Model and Tools must determine if the AI Agent is
+   authorized to access it.  If the AI Agent is acting on-behalf-of a
+   User, the User needs to deelegate access to the AI Agent, and the
+   context of the User needs to be preserved to inform authorization
+   decisions.
+
+   This document describes how AI Agents should leverage existing
+   standards like SPIFFE, WIMSE, OAuth and SSF.
+
+4.  Agent Identity Management System
+
+   An Agent Identity Management System ensure that the right Agent has
+   access to the right resources and tools at the right time for the
+   right reason.  It consists out of the following components:
+
+   *  *Agent Identifiers:* Unique identifier assigned to every Agent.
+
+   *  *Agent Credentials:* Cryptographic binding between the Agent
+      Identifier and attributes of the Agent.
+
+   *  *Agent Attestation:* Mechanisms for determining and assigning the
+      identifier and issue credentials based on measurements of the
+      Agent's environment.
+
+   *  *Agent Credential Provisioning:* The mechanism for provisioning
+      credentials to the agent at runtime.
+
+   *  *Agent Authentication:* Protocols and mechanisms used by the Agent
+      to authenticate itself to Large Langugage Models or Tools
+      (resource or server) in the system.
+
+   *  *Agent Authorization:* Protocols and systems used to determine if
+      an Agent is allowed to access a Large Langugage Model or Tool
+      (resource or server).
+
+   *  *Agent Monitoring and Remediation:* Protocols and mechanisms to
+      dynamically modify the authorization decisions based on observed
+      behaviour and system state.
+
+   *  *Agent Auhtentication and Authorization Policy:* The configuration
+      and rules for each of the Agent Identity Management System.
+
+   *  *Agent Compliance:* Measurement of the state and fucntioning of
+      the system against the stated policies.
+
+5.  Agent Identifier
 
    Key point - agents must be uniquely identified.  Proposal is to use a
    WIMSE or WIMSE compatible identifier (basicaly a URI).  Refer to
    WIMSE identifier draft.
 
-5.  Agent Credentials
+6.  Agent Credentials
 
    Key point - identifier must be bound to a credential.  Credentials
    have expiry dates and additional attributes relevant to the agent.
@@ -138,35 +232,35 @@ Table of Contents
    SPIFFE, WIMSE.  Refer to API keys as an anit pattern. also say
    something about credential exchange.
 
-6.  Agent Attestation
+7.  Agent Attestation
 
    Key point - agent attestation is the equivalent of identiy proofing.
    there are numerous mechanisms through which this may be achieved,
    which are deployment and risk specific.  Reference WIMSE and SPIFFE
    approaches here.
 
-7.  Agent Credential Provisioning
+8.  Agent Credential Provisioning
 
    Key point - credentials are dynamically provisioned at runtime, they
    are short lived to remove need for expiry management.  Provisioning
    includes initial provisioning and rotation.  Refer to SPIFFE and
-   WIMSE.
+   WIMSE.  Maybe hint at using SCIM here?
 
-8.  Agent Authentication
+9.  Agent Authentication
 
    Key point - agents may authenticate in a number of ways based on
    credentials, supported protocols and environment.  Distinguish
    between network and application layer.  Refernece WIMSE.
 
-8.1.  Network layer authentication
+9.1.  Network layer authentication
 
    MTLS
 
-8.2.  Application layer authentication
+9.2.  Application layer authentication
 
    WPT, HTTP Sig.
 
-9.  Agent Authorization
+10.  Agent Authorization
 
    Key point - OAuth is broadly supported and provides a delegation
    model for users to clients (aka agents).  Agents can obtain acess
@@ -185,25 +279,25 @@ Table of Contents
 
    Picture -> Access Token -> Transaction Token -> Domain 1 -> Domain 2
 
-9.1.  Same Domain Authorization
+10.1.  Same Domain Authorization
 
-9.1.1.  Initial Authorization
+10.1.1.  Initial Authorization
 
    User Delegated Authroization Initial authorization - user or agent
    gets access token.
 
-9.1.2.  Donwscoped, Time Bount, Context Enriched Agent Authorization
+10.1.2.  Donwscoped, Time Bount, Context Enriched Agent Authorization
 
    Transaction Tokens
 
-9.1.3.  Agent-to-Resource Authorization
+10.1.3.  Agent-to-Resource Authorization
 
    Present token, peform additional authorization (RBAC etc?)  Direct or
    via tools Resources, services.
 
    Agent -> Tool -> Service -> Resource
 
-9.1.4.  Human-in-the loop
+10.1.4.  Human-in-the loop
 
    Agent framework problem -> human in the loop - confirm something that
    it can already do - agent framework capability - confirmation.  Risk
@@ -213,37 +307,37 @@ Table of Contents
    MCP Elicitation to agent to perform some browser things - start authz
    code grant flow.  CIBA
 
-9.2.  Cross Domain Agent-to-Agent Authroization
+10.2.  Cross Domain Agent-to-Agent Authorization
 
    Identiyt chaining, ID-Jag.
 
-10.  Agent Monitoring and Remediation
+11.  Agent Monitoring and Remediation
 
    Key point - ongoing monitoring and remediation is needed.  Use
    protocols like SSE, CAEP to respond to changes in authorization.
    Note the need for ongoing logging and audit trails.  Talk about end-
    to-end audit and how this is enabled by having agent identifiers.
 
-11.  Agent Auhtnetication and Authorization Policy
+12.  Agent Auhtentication and Authorization Policy
 
    Key point - configuration and parameters for all the above
    constitutes policy.  Not stnadardises and not recommended for
    standrdisation?  Perhaps somethign about document format?
 
-12.  Agent Compliance
+13.  Agent Compliance
 
    Key point - audit against Agent Identity Policy - not standrdised and
    not recommended to standardise.
 
-13.  Security Considerations
+14.  Security Considerations
 
    TODO Security
 
-14.  IANA Considerations
+15.  IANA Considerations
 
    This document has no IANA actions.
 
-15.  Normative References
+16.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
