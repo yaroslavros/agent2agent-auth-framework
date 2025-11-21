@@ -67,11 +67,11 @@ An Agent is a workload that iteratively interacts with a Large Language Model (L
                      ^   |
                  (2) |   | (3)
                      |   v
-+--------+       +----------+       +--------+       +-----------+
-|  User  |--(1)->| AI Agent |--(4)->| Tools  |--(5)->| Services  |
-|        |       |          |       |        |       |   and     |
-|        |--(8)->|          |<-(7)--|        |<-(6)--| Resources |
-+--------+       +----------+       +--------+       +-----------+
++--------+       +------------+       +--------+       +-----------+
+|  User  |--(1)->| AI Agent   |--(4)->| Tools  |--(5)->| Services  |
+|        |       | (workload) |       |        |       |   and     |
+|        |--(8)->|            |<-(7)--|        |<-(6)--| Resources |
++--------+       +------------+       +--------+       +-----------+
 ~~~
 {: #fig-agent-basic title="AI Agent as a Workload"}
 
