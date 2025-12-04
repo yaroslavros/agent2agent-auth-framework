@@ -119,14 +119,14 @@ The Workload Identity in Multi-System Environments (WIMSE) working group builds 
 
 Because SPIFFE IDs are URI-based workload identifiers and their structure aligns with the identifier model defined in the WIMSE identifier draft, all SPIFFE IDs can be treated as valid WIMSE identifiers.
 
-All Agents MUST be assigned a WIMSE identifier, which MAY be a SPIFFE ID. 
+All Agents MUST be assigned a WIMSE identifier, which MAY be a SPIFFE ID.
 
 # Agent Credentials
 Agents MUST have credentials that provide a cryptographic binding to the agent identifier. These credentials are considered primary credentials that are provisioned at runtime. The cryptographic binding is essential for establishing trust since an identifier on its own is insufficient unless it is verifiably tied to a key or token controlled by the agent. WIMSE define a profile of X.509 certificates and Workload Identity Tokens (WITs), while SPIFFE defines SPIFFE Verified ID (SVID) profiles of JSON Web Token (JWT-SVID), X.509 certificates (X.509-SVID) and WIMSE Workload Identity Tokens (WIT-SVID). SPIFFE SVID credentials are compatible with WIMSE defined credentials. The choice of an appropriate format depends on the trust model and integration requirements.
 
-Agent credentials MUST be ephemeral, include an explicit expiration time, and MAY carry additional attributes relevant to the agent (e.g., trust domain, attestation evidence, or workload metadata). 
+Agent credentials MUST be ephemeral, include an explicit expiration time, and MAY carry additional attributes relevant to the agent (e.g., trust domain, attestation evidence, or workload metadata).
 
-In some cases, agents MAY need to have access to a secondary credential format to acces a proprietary or legacy system that is not compatible with the X.509, JWT or WIT it is provisioned with. In these cases an agent MAY exchange their primary credentials through a credential exchange mechanisms (e.g., OAuth 2.0 Token Exchange, Transaction Tokens, Workload Identity Federation). This allows an agent to obtain a credential targeted to a specific relying party by leveraging the primary credential in its possession. 
+In some cases, agents MAY need to have access to a secondary credential format to acces a proprietary or legacy system that is not compatible with the X.509, JWT or WIT it is provisioned with. In these cases an agent MAY exchange their primary credentials through a credential exchange mechanisms (e.g., OAuth 2.0 Token Exchange, Transaction Tokens, Workload Identity Federation). This allows an agent to obtain a credential targeted to a specific relying party by leveraging the primary credential in its possession.
 
 Note: Static API keys are an anti-pattern for agent identity. They lack cryptographic binding, cannot convey attestation or provenance, and are difficult to rotate or scope, making them unsuitable for secure Agent-to-Agent authentication or authorization.
 
