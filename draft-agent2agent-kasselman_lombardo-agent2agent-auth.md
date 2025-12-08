@@ -25,7 +25,7 @@ venue:
 
 author:
  -
-    fullname: "PieterKas"
+    fullname: "Pieter Kasselman"
     organization: Your Organization Here
     email: "pieter@defakto.security"
 
@@ -130,13 +130,13 @@ In some cases, agents MAY need to have access to a secondary credential format t
 
 Note: Static API keys are an anti-pattern for agent identity. They lack cryptographic binding, cannot convey attestation or provenance, and are difficult to rotate or scope, making them unsuitable for secure Agent-to-Agent authentication or authorization.
 
-# Agent Attestation
+# Agent Attestation - Pieter
 Key point - agent attestation is the equivalent of identiy proofing. there are numerous mechanisms through which this may be achieved, which are deployment and risk specific. Reference WIMSE and SPIFFE approaches here.
 
-# Agent Credential Provisioning
+# Agent Credential Provisioning - Pieter
 Key point - credentials are dynamically provisioned at runtime, they are short lived to remove need for expiry management. Provisioning includes initial provisioning and rotation. Refer to SPIFFE and WIMSE. Maybe hint at using SCIM here?
 
-# Agent Authentication
+# Agent Authentication - Pieter
 Key point - agents may authenticate in a number of ways based on credentials, supported protocols and environment. Distinguish between network and application layer. Refernece WIMSE.
 
 ## Network layer authentication
@@ -145,7 +145,7 @@ MTLS
 ## Application layer authentication
 WPT, HTTP Sig.
 
-# Agent Authorization
+# Agent Authorization - Jeff
 Key point - OAuth is broadly supported and provides a delegation model for users to clients (aka agents). Agents can obtain acess tokens directly (client credentials flow, using above authentication methods) or it can be delegated to them by a user (OAuth flows). Make point that the access token includes the client_id, which is the same as the Agent ID (ore related to it) and can be used for authroization decisions, along with other claims in an Access Token (reference JWT Access token spec). Make provision for opaque tokens as well. Discuss Downscoping of agent authorization using transaction tokens. Discuss cross-domain authorization (use cases) and how it may be achieved (identity chaining and cross-domain authorization). Discuss human in the loop authroization. Note concerns, refer to cross-device BCP as examples of consent phishing attacsk. Talk about CIBA as a protocol.
 
 Picture -> Access Token -> Transaction Token -> Domain 1 -> Domain 2
@@ -175,14 +175,14 @@ CIBA
 ## Cross Domain Agent-to-Agent Authorization
 Identiyt chaining, ID-Jag.
 
-# Agent Monitoring and Remediation
+# Agent Monitoring and Remediation - Jeff
 Key point - ongoing monitoring and remediation is needed. Use protocols like SSE, CAEP to respond to changes in authorization. Note the need for ongoing logging and audit trails. Talk about end-to-end audit and how this is enabled by having agent identifiers.
 
-# Agent Auhtentication and Authorization Policy
+# Agent Auhtentication and Authorization Policy - Discuss
 Key point - configuration and parameters for all the above constitutes policy. Not stnadardises and not recommended for standrdisation? Perhaps somethign about document format?
 
-# Agent Compliance
-Key point - audit against Agent Identity Policy - not standrdised and not recommended to standardise.
+# Agent Compliance - Discuss
+Key point - audit against Agent Identity Policy - not standrdised and not recommended to standardise. Governance and observability. Perhaps we discuss and describe, but don't suggest standards here.
 
 # Security Considerations
 
