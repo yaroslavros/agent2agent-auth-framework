@@ -25,7 +25,7 @@ venue:
 
 author:
  -
-    fullname: "Pieter Kasselman"
+    fullname: Pieter Kasselman
     organization: Your Organization Here
     email: "pieter@defakto.security"
 
