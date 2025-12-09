@@ -31,9 +31,7 @@ author:
 
  -
     fullname: Jean-François Lombardo
-    nickname: Jeff
     organization: AWS
-    country: Canada
     email: jeffsec@amazon.com
 
 normative:
@@ -127,7 +125,7 @@ An Agent Identity Management System ensure that the right Agent has access to th
 * **Agent Compliance:** Measurement of the state and fucntioning of the system against the stated policies.
 
 # Agent Identifier
-Agents MUST be uniquely identified to enable authentication and authorization. The Secure Production Identity Framework for Everyone (SPIFFE) identifier format is widely deployed and operationally mature. The SPIFFE workload identity model defines a SPIFFE identifier (SPIFFE ID) as a URI of the form spiffe://<trust-domain>/<path> that uniquely identifies a workload within a trust domain {{SPIFFE}}.
+Agents MUST be uniquely identified to enable authentication and authorization. The Secure Production Identity Framework for Everyone (SPIFFE) identifier format is widely deployed and operationally mature. The SPIFFE workload identity model defines a SPIFFE identifier (SPIFFE ID) as a URI of the form `spiffe://<trust-domain>/<path>` that uniquely identifies a workload within a trust domain {{SPIFFE}}.
 
 The Workload Identity in Multi-System Environments (WIMSE) working group builds on the experiences gained by the SPIFFE community and defines the WIMSE workload identifier {{WIMSE_ID}} as a URI that uniquely identifies a workload within a given trust domain.
 
