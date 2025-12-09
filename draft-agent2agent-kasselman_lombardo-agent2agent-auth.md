@@ -37,17 +37,28 @@ author:
     email: jeffsec@amazon.com
 
 normative:
+  RFC9334: # Remote ATtestation procedureS (RATS) Architecture
   WIMSE_ID:
     title: "WIMSE Identifier"
     target: https://datatracker.ietf.org/doc/draft-ietf-wimse-identifier/
-  
   SPIFFE:
     title: "Secure Production Identity Framework for Everyone"
     target: https://spiffe.io/docs/latest/spiffe-about/overview/
-    author:
-    - org: Cloud Native Computing Foundation
-
-  RFC9334: # Remote ATtestation procedureS (RATS) Architecture
+  SPIFFE_ID:
+    title: SPIFFE-ID
+    target: https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE-ID.md
+  SPIFFE_X509:
+    title: X509-SVID
+    target: https://github.com/spiffe/spiffe/blob/main/standards/X509-SVID.md
+  SPIFFE_JWT:
+    title: JWT-SVID
+    target: https://github.com/spiffe/spiffe/blob/main/standards/JWT-SVID.md
+  SPIFFE_BUNDLE:
+    title: SPIFFE Bundle
+    target: https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE_Trust_Domain_and_Bundle.md#4-spiffe-bundle-format
+  SPIFFE_FEDERATION:
+    title: SPIFFE Federation
+    target: https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE_Federation.md
 
 informative:
 
@@ -152,7 +163,7 @@ Agent credential provisioning typically includes two phases:
 
 The use of short-lived credentials provides a signiifcant improvement in the risk profile and risk of credential exposure. It provides an alternative to explicit revocation mechanisms and simplifies lifecycle management in large, automated environments.
 
-Deployed frameworks such as {{SPIFFE}} provide concrete mechanisms for automated, short-lived credential provisioning at runtime based on workload attestation. In addition to issuing short-lived credentials, {{SPIFFE}} also provisions ephemeral cryptographic key material bound to each credential, further reducing the risks associated with compromising long-lived keys.
+Deployed frameworks such as {{!SPIFFE}} provide concrete mechanisms for automated, short-lived credential provisioning at runtime based on workload attestation. In addition to issuing short-lived credentials, {{!SPIFFE}} also provisions ephemeral cryptographic key material bound to each credential, further reducing the risks associated with compromising long-lived keys.
 
 # Agent Authentication - Pieter
 Key point - agents may authenticate in a number of ways based on credentials, supported protocols and environment. Distinguish between network and application layer. Refernece WIMSE.
