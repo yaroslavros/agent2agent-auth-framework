@@ -111,7 +111,7 @@ An Agent is a workload that iteratively interacts with a Large Language Model (L
 
 As shown in {{fig-agent-basic}}, the AI Agent is a workload that needs and identifier and credentials with which to authenticate itself to the Large Langugage Model and Tools. Once it has authenticated, the Large Langugage Model and Tools must determine if the AI Agent is authorized to access it. If the AI Agent is acting on-behalf-of a User, the User needs to deelegate access to the AI Agent, and the context of the User needs to be preserved to inform authorization decisions.
 
-This document describes how AI Agents should leverage existing standards defined by SPIFFE {{!SPIFFE}}, WIMSE, OAuth and SSF.
+This document describes how AI Agents should leverage existing standards defined by SPIFFE {{SPIFFE}}, WIMSE, OAuth and SSF.
 
 # Agent Identity Management System
 An Agent Identity Management System ensure that the right Agent has access to the right resources and tools at the right time for the right reason. It consists out of the following components:
@@ -127,7 +127,7 @@ An Agent Identity Management System ensure that the right Agent has access to th
 * **Agent Compliance:** Measurement of the state and fucntioning of the system against the stated policies.
 
 # Agent Identifier
-Agents MUST be uniquely identified to enable authentication and authorization. The Secure Production Identity Framework for Everyone (SPIFFE) identifier format is widely deployed and operationally mature. The SPIFFE workload identity model defines a SPIFFE identifier (SPIFFE ID) as a URI of the form spiffe://<trust-domain>/<path> that uniquely identifies a workload within a trust domain {{!SPIFFE}}.
+Agents MUST be uniquely identified to enable authentication and authorization. The Secure Production Identity Framework for Everyone (SPIFFE) identifier format is widely deployed and operationally mature. The SPIFFE workload identity model defines a SPIFFE identifier (SPIFFE ID) as a URI of the form spiffe://<trust-domain>/<path> that uniquely identifies a workload within a trust domain {{SPIFFE}}.
 
 The Workload Identity in Multi-System Environments (WIMSE) working group builds on the experiences gained by the SPIFFE community and defines the WIMSE workload identifier {{WIMSE_ID}} as a URI that uniquely identifies a workload within a given trust domain.
 
@@ -163,7 +163,7 @@ Agent credential provisioning typically includes two phases:
 
 The use of short-lived credentials provides a signiifcant improvement in the risk profile and risk of credential exposure. It provides an alternative to explicit revocation mechanisms and simplifies lifecycle management in large, automated environments.
 
-Deployed frameworks such as {{!SPIFFE}} provide concrete mechanisms for automated, short-lived credential provisioning at runtime based on workload attestation. In addition to issuing short-lived credentials, {{!SPIFFE}} also provisions ephemeral cryptographic key material bound to each credential, further reducing the risks associated with compromising long-lived keys.
+Deployed frameworks such as {{SPIFFE}} provide concrete mechanisms for automated, short-lived credential provisioning at runtime based on workload attestation. In addition to issuing short-lived credentials, {{SPIFFE}} also provisions ephemeral cryptographic key material bound to each credential, further reducing the risks associated with compromising long-lived keys.
 
 # Agent Authentication - Pieter
 Key point - agents may authenticate in a number of ways based on credentials, supported protocols and environment. Distinguish between network and application layer. Refernece WIMSE.
