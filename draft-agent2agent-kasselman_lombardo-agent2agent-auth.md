@@ -37,7 +37,7 @@ author:
     email: jeffsec@amazon.com
 
 normative:
-  WIMSE_ID
+  WIMSE_ID:
     title: "WIMSE Identifier"
     target: https://datatracker.ietf.org/doc/draft-ietf-wimse-identifier/
   
@@ -138,7 +138,7 @@ Agent attestation is the identity-proofing mechanism for AI agents. Just as huma
 
 Multiple attestation mechanisms exist, and the appropriate choice is deployment, and risk, specific. These mechanisms may include hardware-based attestations (e.g., TEE evidence), software integrity measurements, supply-chain provenance, platform and orchestration-layer attestations, or operator assertions. Depending on the risk involved, a single attestation may be sufficient, or, in higher risk scenarios, multi-attestation may be requred.
 
-The Remote ATtestation Procedures (RATS) architecture (see {{RFC9334}}) provides a general model for producing, conveying, and verifying attestation evidence. RATS defines the roles of Attester, Verifier, and Relying Party, as well as the concept of Evidence, Endorsements, and Attestation Results. 
+The Remote ATtestation Procedures (RATS) architecture (see {{RFC9334}}) provides a general model for producing, conveying, and verifying attestation evidence. RATS defines the roles of Attester, Verifier, and Relying Party, as well as the concept of Evidence, Endorsements, and Attestation Results.
 
 Workload identity management systems can use different attestation mechanisms and implementations (including RATS), to represent attestation evidence and deliver it to credential provisioning systems.
 
