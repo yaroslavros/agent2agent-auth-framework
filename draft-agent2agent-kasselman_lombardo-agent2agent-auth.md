@@ -71,6 +71,15 @@ normative:
     target: https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE_Federation.md
 
 informative:
+  OAAUTH2:
+    title: The OAuth 2.0 Authorization Framework
+    target: https://datatracker.ietf.org/doc/html/rfc6749
+  AUTHZEN:
+    title: Authorization API 1.0 – draft 05
+    target: https://openid.github.io/authzen/
+  TRAT:
+    title: Transaction Tokens
+    target: https://datatracker.ietf.org/doc/draft-ietf-oauth-transaction-tokens/
 
 ...
 
@@ -105,7 +114,7 @@ An Agent is a workload that iteratively interacts with a Large Language Model (L
 +--------+       +------------+       +--------+       +-----------+
 |  User  |--(1)->| AI Agent   |--(4)->| Tools  |--(5)->| Services  |
 |        |       | (workload) |       |        |       |   and     |
-|        |--(8)->|            |<-(7)--|        |<-(6)--| Resources |
+|        |<-(8)--|            |<-(7)--|        |<-(6)--| Resources |
 +--------+       +------------+       +--------+       +-----------+
 ~~~
 {: #fig-agent-basic title="AI Agent as a Workload"}
@@ -201,16 +210,59 @@ Although the draft currently defines detailed usage for HTTP (via a Workload-Pro
 The WIMSE Workload-to-Workload Authentication with HTTP Signatures specification {{WIMSE_HTTPSIG}} defines an application-layer authentication profile built on the HTTP Message Signatures standard {{RFC9421}}. It is one of the mechanisms WIMSE defines for authenticating workloads in HTTP-based interactions where transport-layer protections may be insufficient or unavailable. The protocol combines a workload’s Workload Identity Token (WIT), which conveys attested identity and binds a public key, with HTTP Message Signatures using the corresponding private key, thereby providing proof of possession and message integrity for individual HTTP requests and responses. This approach ensures end-to-end authentication and integrity even when traffic traverses intermediaries such as TLS proxies or load balancers that break transport-layer identity continuity. The profile mandates signing of key request components (e.g., method, target, content digest, and the WIT itself) and supports optional response signing to ensure full protection of workload-to-workload exchanges.
 
 # Agent Authorization - Jeff
-Key point - OAuth is broadly supported and provides a delegation model for users to clients (aka agents). Agents can obtain acess tokens directly (client credentials flow, using above authentication methods) or it can be delegated to them by a user (OAuth flows). Make point that the access token includes the client_id, which is the same as the Agent ID (ore related to it) and can be used for authroization decisions, along with other claims in an Access Token (reference JWT Access token spec). Make provision for opaque tokens as well. Discuss Downscoping of agent authorization using transaction tokens. Discuss cross-domain authorization (use cases) and how it may be achieved (identity chaining and cross-domain authorization). Discuss human in the loop authroization. Note concerns, refer to cross-device BCP as examples of consent phishing attacsk. Talk about CIBA as a protocol.
+During agent execution, authorization must be enforced at all the layers in order to provide an in-depth protection of the resources that are exposed to it. For each layer, we must consider the following 3 phases:
+- Negotiation between the layer and its caller of the required pieces of authorization required to interact with the layer
+- Acquisition of the piece of authorization by the caller at the authorization server authoritative for this layer
+- Validation of the piece of authorization in the context of the request
 
-Picture -> Access Token -> Transaction Token -> Domain 1 -> Domain 2
+As part of this process:
+- {{OAUTH2}} is an established and maintained framework of specifications for requesting, acquiring, and proving ownership of pieces of authorization in the form of bearer tokens.
+- {{AUTHZEN}} is a new specification for exchanging authorization requests and decisions between the layer acting at the Policy Enforcement Point (PEP) and a Policy Decision Point (PDP).
+- {{TRAT}} is new specification for formattting pieces of authorization in the form of transaction bound bearer tokens.
 
-## Same Domain Authorization
+~~~ ascii-art
+               +----------------+
+               | Large Language |
+               |   Model (LLM)  |
+               +----------------+
+                     ^   |
+                     |   |
+                     |   v
++----------+       +------------+       +--------+       +-----------+
+|  Caller  |-(B)-->| AI Agent   |--(E)->| Tools  |--(H)->| Services  |
+|          |       | (workload) |       |        |       |   and     |
+|          |<------|            |<------|        |<------| Resources |
++----------+       +------------+       +--------+       +-----------+
+     ^               ^  ^                 ^    ^              ^
+     |    ¦---(C)----¦  |                 |    |              |
+     |    |             |                 |    |              |
+     |    |   ¦---(D)---¦                (F)   |              |
+     |    |   |                           |    |              |
+     |    |   |  +---------------+        |   (G)            (I)
+    (A)   |   |  |    Policy     |        |    |              |
+     |    |   ¦->|   Decision    |<-------¦    |              |
+     |    |      |    Point      |<------------+--------------¦
+     |    |      +---------------+             |
+     |    |      +---------------+             |
+     |    ¦----->| Authorization |<------------¦
+     ¦---------->|   server      |
+                 +---------------+
+~~~
 
+
+> Key point - OAuth is broadly supported and provides a delegation model for users to clients (aka agents). Agents can obtain acess tokens directly (client credentials flow, using above authentication methods) or it can be delegated to them by a user (OAuth flows). Make point that the access token includes the client_id, which is the same as the Agent ID (ore related to it) and can be used for authroization decisions, along with other claims in an Access Token (reference JWT Access token spec). Make provision for opaque tokens as well. Discuss Downscoping of agent authorization using transaction tokens. Discuss cross-domain authorization (use cases) and how it may be achieved (identity chaining and cross-domain authorization). Discuss human in the loop authroization. Note concerns, refer to cross-device BCP as examples of consent phishing attacsk. Talk about CIBA as a protocol.
+
+## Principles
 ### Initial Authorization
+When a caller wants to interact with an agent, it must provide a piece of authorization and in order to present it must acquire it in the first place.
+
+To acquire such initial piece of authorization the caller uses {{OAUTH2}} grant flows based on the situation.
+
+
+
 User Delegated Authroization Initial authorization - user or agent gets access token.
 
-### Donwscoped, Time Bount, Context Enriched Agent Authorization
+### Donwscoped, Time Bound, Context Enriched, and credential exchange in Agent Authorization
 Transaction Tokens
 
 ### Agent-to-Resource Authorization
@@ -227,7 +279,9 @@ Human in the loop - request esalated privelages. Step-up authorization - referne
 MCP Elicitation to agent to perform some browser things - start authz code grant flow.
 CIBA
 
-## Cross Domain Agent-to-Agent Authorization
+## Case of Multi Domain Authorization
+
+### Cross Domain Agent-to-Agent Authorization
 Identiyt chaining, ID-Jag.
 
 # Agent Monitoring and Remediation - Jeff
