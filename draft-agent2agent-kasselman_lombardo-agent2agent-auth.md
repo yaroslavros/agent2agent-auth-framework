@@ -95,7 +95,7 @@ normative:
     title: JSON Web Token Best Current Practices
     target: https://datatracker.ietf.org/doc/rfc8725
   RFC6750:
-    title: The OAuth 2.0 Authorization Framework: Bearer Token Usage
+    title: "The OAuth 2.0 Authorization Framework: Bearer Token Usage"
     target: https://datatracker.ietf.org/doc/rfc6750
   RFC7662:
     title: OAuth 2.0 Token Introspection
