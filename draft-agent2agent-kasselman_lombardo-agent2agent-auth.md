@@ -26,11 +26,12 @@ venue:
 author:
  -
     fullname: Pieter Kasselman
-    organization: Your Organization Here
+    organization: DeFakto
     email: "pieter@defakto.security"
 
  -
     fullname: Jean-François Lombardo
+    nickname: Jeff
     organization: AWS
     email: jeffsec@amazon.com
 
@@ -70,9 +71,68 @@ normative:
   SPIFFE_FEDERATION:
     title: SPIFFE Federation
     target: https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE_Federation.md
+  RFC9421:
+    title: HTTP Message Signatures
+    target: https://datatracker.ietf.org/doc/rfc9421
   RFC6749:
     title: The OAuth 2.0 Authorization Framework
     target: https://datatracker.ietf.org/doc/rfc6749
+  RFC9728:
+    title: OAuth 2.0 Protected Resource Metadata
+    target: https://datatracker.ietf.org/doc/rfc9728
+  RFC9449:
+    title: OAuth 2.0 Demonstrating Proof of Possession (DPoP)
+    target: https://datatracker.ietf.org/doc/rfc9449
+  RFC9700:
+    title: Best Current Practice for OAuth 2.0 Security
+    target: https://datatracker.ietf.org/doc/rfc9700
+  RFC9396:
+    title: OAuth 2.0 Rich Authorization Requests
+    target: https://datatracker.ietf.org/doc/rfc9396
+  RFC9126:
+    title: OAuth 2.0 Pushed Authorization Requests
+    target: https://datatracker.ietf.org/doc/rfc9126
+  RFC9068:
+    title: JSON Web Token (JWT) Profile for OAuth 2.0 Access Tokens
+    target: https://datatracker.ietf.org/doc/rfc9068
+  RFC8725:
+    title: JSON Web Token Best Current Practices
+    target: https://datatracker.ietf.org/doc/rfc8725
+  RFC6750:
+    title: "The OAuth 2.0 Authorization Framework: Bearer Token Usage"
+    target: https://datatracker.ietf.org/doc/rfc6750
+  RFC7662:
+    title: OAuth 2.0 Token Introspection
+    target: https://datatracker.ietf.org/doc/rfc7662
+  RFC9701:
+    title: JWT Response for OAuth 2.0 Token Introspection
+    target: ttps://datatracker.ietf.org/doc/rfc9701
+  OpenIDConnect.AuthZEN:
+    title: Authorization API 1.0 – draft 05
+    target: https://openid.github.io/authzen/
+    author:
+    - name: Omri Gazitt
+      role: editor
+      org: Asserto
+    - name: David Brossard
+      role: editor
+      org: Axiomatics
+    - name: Atul Tulshibagwale
+      role: editor
+      org: SGNL
+    date: 2025
+  OAuth.TRAT:
+    title: Transaction Tokens
+    target: https://datatracker.ietf.org/doc/draft-ietf-oauth-transaction-tokens/
+  OAuth.SPIFFE.CLient.Auth:
+    title: OAuth SPIFFE Client Authentication
+    target: https://datatracker.ietf.org/doc/draft-ietf-oauth-spiffe-client-auth
+  OAuth.CIMD:
+    title: OAuth Client ID Metadata Document
+    target: https://datatracker.ietf.org/doc/draft-ietf-oauth-client-id-metadata-document
+  MCP:
+    title: Model Context Protocol
+    target: https://modelcontextprotocol.io/specification
 
 informative:
 
@@ -103,18 +163,18 @@ An Agent is a workload that iteratively interacts with a Large Language Model (L
                | Large Language |
                |   Model (LLM)  |
                +----------------+
-                     ^   |
-                 (2) |   | (3)
-                     |   v
-+--------+       +------------+       +--------+       +-----------+
-|  User  |--(1)->| AI Agent   |--(4)->| Tools  |--(5)->| Services  |
-|        |       | (workload) |       |        |       |   and     |
-|        |--(8)->|            |<-(7)--|        |<-(6)--| Resources |
-+--------+       +------------+       +--------+       +-----------+
+                     ▲   |
+                    (2) (3)
+                     |   ▼
++--------+       +------------+       +-----------+       +-----------+
+| Client |──(1)─►| AI Agent   |──(4)─►| AI Tools  |──(5)─►| Services  |
+|        |       | (workload) |       |           |       |   and     |
+|        |◄─(8)──|            |◄─(7)──|           |◄─(6)──| Resources |
++--------+       +------------+       +-----------+       +-----------+
 ~~~
 {: #fig-agent-basic title="AI Agent as a Workload"}
 
-1. Optional: The User provides an initial request or instruction to the AI Agent.
+1. Optional: The Client provides an initial request or instruction to the AI Agent.
 2. The AI Agent forwards the available context to the LLM. Context isimplementation and deployment specific and may include User input, system prompt, tool descriptions, tool outputs and other relevant information.
 3. The LLM returns a response to the AI Agent identifying which tools it should invoke.
 4. Based on the LLM’s output, the AI Agent invokes the relevant Tools.
@@ -204,17 +264,98 @@ Although the draft currently defines detailed usage for HTTP (via a Workload-Pro
 ###  HTTP Message Signatures (HTTP Sig)
 The WIMSE Workload-to-Workload Authentication with HTTP Signatures specification {{WIMSE_HTTPSIG}} defines an application-layer authentication profile built on the HTTP Message Signatures standard {{RFC9421}}. It is one of the mechanisms WIMSE defines for authenticating workloads in HTTP-based interactions where transport-layer protections may be insufficient or unavailable. The protocol combines a workload’s Workload Identity Token (WIT), which conveys attested identity and binds a public key, with HTTP Message Signatures using the corresponding private key, thereby providing proof of possession and message integrity for individual HTTP requests and responses. This approach ensures end-to-end authentication and integrity even when traffic traverses intermediaries such as TLS proxies or load balancers that break transport-layer identity continuity. The profile mandates signing of key request components (e.g., method, target, content digest, and the WIT itself) and supports optional response signing to ensure full protection of workload-to-workload exchanges.
 
-# Agent Authorization - Jeff
-Key point - OAuth is broadly supported and provides a delegation model for users to clients (aka agents). Agents can obtain acess tokens directly (client credentials flow, using above authentication methods) or it can be delegated to them by a user (OAuth flows). Make point that the access token includes the client_id, which is the same as the Agent ID (ore related to it) and can be used for authroization decisions, along with other claims in an Access Token (reference JWT Access token spec). Make provision for opaque tokens as well. Discuss Downscoping of agent authorization using transaction tokens. Discuss cross-domain authorization (use cases) and how it may be achieved (identity chaining and cross-domain authorization). Discuss human in the loop authroization. Note concerns, refer to cross-device BCP as examples of consent phishing attacsk. Talk about CIBA as a protocol.
+# Agent Authorization
+During agent execution, authorization must be enforced at all the layers in order to provide an in-depth protection of the resources that are exposed to it. For each layer, we must consider the following 3 phases:
+- Negotiation between the layer and its caller on the required pieces of authorization required to interact with the layer
+- Acquisition of the piece of authorization by the caller at the authorization server authoritative for this layer
+- Validation of the piece of authorization in the context of the request
 
-Picture -> Access Token -> Transaction Token -> Domain 1 -> Domain 2
+As part of this process:
+- {{RFC6749}} is an established and maintained framework of specifications for requesting, acquiring, and proving ownership of pieces of authorization in the form of bearer tokens.
+- {{OpenIDConnect.AuthZEN}} is a new specification for exchanging authorization requests and decisions between the layer acting at the Policy Enforcement Point (PEP) and a Policy Decision Point (PDP).
+- {{OAuth.TRAT}} is new specification for formattting pieces of authorization in the form of transaction bound bearer tokens.
 
-## Same Domain Authorization
+~~~ ascii-art
+                 +----------------+
+                 | Large Language |
+                 |   Model (LLM)  |
+                 +----------------+
+                        ▲   |
+                        │   |
+                        |   ▼
++----------+         +------------+         +-----------+         +-----------+
+|  Client  |─(A)(C)─►|  AI Agent  |─(E)(G)─►| AI Tools  |─(I)(K)─►| Services  |
+|          |         | (workload) |         |           |         |   and     |
+|          |◄────────|            |◄────────|           |◄────────| Resources |
++----------+         +------------+         +-----------+         +-----------+
+     ▲                  ▲  ▲                   ▲   ▲                ▲
+     |    ┌──(F)────────┘  |                   |   |                |
+     |    |   ┌───(D)──────┘                  (H)  |                |
+     |    |   |  +---------------+             |  (J)              (L)
+    (B)   |   |  |    Policy     |             |   |                |
+     |    |   └─►|   Decision    |◄────────────┘   |                |
+     |    |      |    Point      |◄────────────────┼────────────────┘
+     |    |      +---------------+                 |
+     |    |      +---------------+                 |
+     |    └─────►| Authorization |◄────────────────┘
+     └──────────►|   server      |
+                 +---------------+
+~~~
 
-### Initial Authorization
-User Delegated Authroization Initial authorization - user or agent gets access token.
 
-### Donwscoped, Time Bount, Context Enriched Agent Authorization
+> Key point - OAuth is broadly supported and provides a delegation model for users to clients (aka agents). Agents can obtain access tokens directly (client credentials flow, using above authentication methods) or it can be delegated to them by a user (OAuth flows). Make point that the access token includes the client_id, which is the same as the Agent ID (ore related to it) and can be used for authorization decisions, along with other claims in an Access Token (reference JWT Access token spec). Make provision for opaque tokens as well. Discuss Downscoping of agent authorization using transaction tokens. Discuss cross-domain authorization (use cases) and how it may be achieved (identity chaining and cross-domain authorization). Discuss human in the loop authorization. Note concerns, refer to cross-device BCP as examples of consent phishing attacks. Talk about CIBA as a protocol.
+
+## Client to AI Agent
+### (A) Negotiation - OPTIONAL
+
+Following {{RFC9728}}, the client MAY interact with the metadata endpoint of an OAuth 2.0 protected resource to understand which Authorization Server is the authority this resource; which scopes or authorization details values MAY be required to access this resources; and if proof of possession needs to be presented as standardized with {{RFC9449}}.
+
+### (B) Initial Authorization
+
+Based on the information collected as part of (A) or based on its configuration, the client is initiating an authorization request with the Authorization Server acting as authority for the AI Agent.
+
+For this, the client MUST use one of the grant types described in {{RFC6749}} as follows:
+
+- If the client acts on its behalf as a system, it will start a client credential grant flow as described in section 1.3.4 of {{RFC6749}};
+- If the client acts on delegation by a user, it will start an authorization code grant flow as described in section 1.3.1 of {{RFC6749}}.
+
+The client MUST follow the beast current practices described in {{RFC9700}}.
+
+As part of the grant flow, the client MUST also fulfill all the expected extensions it has an understanding of. For example, not exhaustively:
+- Binding the requested tokens to a possessed key as defined in {{RFC9449}};
+- Requesting additional authorization details as defined in {{RFC9396}} or {{RFC9126}}
+
+When identifying the client MUST use either a {{SPIFFE_ID}}, a {{WIMSE_ID}}, or a specific identifier that can be resolved to either a {{SPIFFE_ID}} as described in {{OAuth.SPIFFE.CLient.Auth}} or a {{WIMSE_ID}} as described in !TODO. Those identifiers MUST be published into the metadata document of the client as defined in {{OAuth.CIMD}}.
+
+If the OAuth2 tokens issued by the authorization server are JWT profiled, they must follow the format described at {{RFC9068}} and MUST follow the best practices described at {{RFC8725}}.
+
+### (C) Access to the AI Agent
+
+To access an AI Agent, the client MUST present its credentials as defined in section 7 of {{RFC6749}} as well as defined in {{RFC6750}}. The client MUST be able to process error codes as defined in section 3 of {{RFC6750}}.
+
+The client MUST follow the beast current practices described in {{RFC9700}}.
+
+### (D) Controlling access to the AI Agent
+
+The AI Agent MUST validate the presented token as described in {{RFC6749}}.
+
+If token introspection is required, the AI Agent MUST follow {{RFC7662}} as well as {{RFC9701}}.
+
+If the provided token is a JWT profiled token as defined in {{RFC9068}}, the AI Agent MUST follow the section 2 of this specification as part of the token validation.
+
+If the AI Agent delegates its access control logic to a Policy decision point, it MUST follow {{OpenIDConnect.AuthZEN}} specification for requesting and receiving a decision for the access.
+
+## AI Agent to AI tools
+
+> Interactions between an AI Agent and AI Tools are globally specified by {{MCP}}. Those sections explain the core specification, {{MCP}} is based on as well as the complementary specifications RECOMMENDED.
+
+### (E) Negotiation
+
+Following {{RFC9728}}, the AI Agent MUST interact with the metadata endpoint of an OAuth 2.0 protected resource to understand which Authorization Server is the authority this resource; which scopes or authorization details values MAY be required to access this resources; and if proof of possession needs to be presented as standardized with {{RFC9449}}.
+
+### (F) AI Agent Authorization
+
+Donwscoped, Time Bound, Context Enriched, and credential exchange in Agent Authorization
 Transaction Tokens
 
 ### Agent-to-Resource Authorization
@@ -231,7 +372,9 @@ Human in the loop - request esalated privelages. Step-up authorization - referne
 MCP Elicitation to agent to perform some browser things - start authz code grant flow.
 CIBA
 
-## Cross Domain Agent-to-Agent Authorization
+## Case of Multi Domain Authorization
+
+### Cross Domain Agent-to-Agent Authorization
 Identiyt chaining, ID-Jag.
 
 # Agent Monitoring and Remediation - Jeff
