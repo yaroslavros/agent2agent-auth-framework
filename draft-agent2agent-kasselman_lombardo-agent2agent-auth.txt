@@ -5,8 +5,8 @@
 Network Working Group                                       P. Kasselman
 Internet-Draft                                    Your Organization Here
 Intended status: Informational                               J. Lombardo
-Expires: 10 July 2026                                                AWS
-                                                          6 January 2026
+Expires: 24 July 2026                                                AWS
+                                                         20 January 2026
 
 
             Agent-to-Agent Authentication and Authorization
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 July 2026.
+   This Internet-Draft will expire on 24 July 2026.
 
 Copyright Notice
 
@@ -528,6 +528,9 @@ Table of Contents
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC6749]  "The OAuth 2.0 Authorization Framework", n.d.,
+              <https://datatracker.ietf.org/doc/rfc6749>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
