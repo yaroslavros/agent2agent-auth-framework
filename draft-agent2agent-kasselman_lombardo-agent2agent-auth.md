@@ -31,6 +31,7 @@ author:
 
  -
     fullname: Jean-François Lombardo
+    nickname: Jeff
     organization: AWS
     email: jeffsec@amazon.com
 
@@ -69,9 +70,7 @@ normative:
   SPIFFE_FEDERATION:
     title: SPIFFE Federation
     target: https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE_Federation.md
-
-informative:
-  OAAUTH2:
+  OAUTH2:
     title: The OAuth 2.0 Authorization Framework
     target: https://datatracker.ietf.org/doc/html/rfc6749
   AUTHZEN:
@@ -80,6 +79,8 @@ informative:
   TRAT:
     title: Transaction Tokens
     target: https://datatracker.ietf.org/doc/draft-ietf-oauth-transaction-tokens/
+
+informative:
 
 ...
 
