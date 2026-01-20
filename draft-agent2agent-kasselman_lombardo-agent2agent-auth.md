@@ -26,7 +26,7 @@ venue:
 author:
  -
     fullname: Pieter Kasselman
-    organization: Your Organization Here
+    organization: DeFakto
     email: "pieter@defakto.security"
 
  -
@@ -74,19 +74,19 @@ normative:
     title: The OAuth 2.0 Authorization Framework
     target: https://datatracker.ietf.org/doc/rfc6749
   RFC9728:
-    title: OAuth 2.0 Protected Resource Metadata 
+    title: OAuth 2.0 Protected Resource Metadata
     target: https://datatracker.ietf.org/doc/rfc9728
   RFC9449:
     title: OAuth 2.0 Demonstrating Proof of Possession (DPoP)
     target: https://datatracker.ietf.org/doc/rfc9449
   RFC9700:
-    title: Best Current Practice for OAuth 2.0 Security 
+    title: Best Current Practice for OAuth 2.0 Security
     target: https://datatracker.ietf.org/doc/rfc9700
   RFC9396:
-    title: OAuth 2.0 Rich Authorization Requests 
+    title: OAuth 2.0 Rich Authorization Requests
     target: https://datatracker.ietf.org/doc/rfc9396
   RFC9126:
-    title: OAuth 2.0 Pushed Authorization Requests 
+    title: OAuth 2.0 Pushed Authorization Requests
     target: https://datatracker.ietf.org/doc/rfc9126
   RFC9068:
     title: JSON Web Token (JWT) Profile for OAuth 2.0 Access Tokens
@@ -110,10 +110,10 @@ normative:
     title: Transaction Tokens
     target: https://datatracker.ietf.org/doc/draft-ietf-oauth-transaction-tokens/
   OAuth.SPIFFE.CLient.Auth:
-    title: OAuth SPIFFE Client Authentication 
+    title: OAuth SPIFFE Client Authentication
     target: https://datatracker.ietf.org/doc/draft-ietf-oauth-spiffe-client-auth
   OAuth.CIMD:
-    title: OAuth Client ID Metadata Document 
+    title: OAuth Client ID Metadata Document
     target: https://datatracker.ietf.org/doc/draft-ietf-oauth-client-id-metadata-document
   MCP:
     title: Model Context Protocol
