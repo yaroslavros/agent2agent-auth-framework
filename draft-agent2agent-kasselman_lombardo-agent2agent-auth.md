@@ -70,6 +70,9 @@ normative:
   SPIFFE_FEDERATION:
     title: SPIFFE Federation
     target: https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE_Federation.md
+  RFC6749:
+    title: The OAuth 2.0 Authorization Framework
+    target: https://datatracker.ietf.org/doc/rfc6749
 
 informative:
 
