@@ -541,7 +541,7 @@ Table of Contents
       authorization code grant flow as described in section 1.3.1 of
       [RFC6749].
 
-   The client MUST follow the beast current practices described in
+   The client MUST follow the best current practices described in
    [RFC9700].
 
    As part of the grant flow, the client MUST also fulfill all the
@@ -568,7 +568,7 @@ Table of Contents
    The client MUST be able to process error codes as defined in section
    3 of [RFC6750].
 
-   The client MUST follow the beast current practices described in
+   The client MUST follow the best current practices described in
    [RFC9700].
 
 10.1.3.  (D) Controlling access to the AI Agent
