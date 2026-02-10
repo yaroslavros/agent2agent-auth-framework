@@ -280,15 +280,69 @@ Although the draft currently defines detailed usage for HTTP (via a Workload-Pro
 The WIMSE Workload-to-Workload Authentication with HTTP Signatures specification {{WIMSE_HTTPSIG}} defines an application-layer authentication profile built on the HTTP Message Signatures standard {{RFC9421}}. It is one of the mechanisms WIMSE defines for authenticating workloads in HTTP-based interactions where transport-layer protections may be insufficient or unavailable. The protocol combines a workload’s Workload Identity Token (WIT), which conveys attested identity and binds a public key, with HTTP Message Signatures using the corresponding private key, thereby providing proof of possession and message integrity for individual HTTP requests and responses. This approach ensures end-to-end authentication and integrity even when traffic traverses intermediaries such as TLS proxies or load balancers that break transport-layer identity continuity. The profile mandates signing of key request components (e.g., method, target, content digest, and the WIT itself) and supports optional response signing to ensure full protection of workload-to-workload exchanges.
 
 # Agent Authorization
-Agents may act on behalf of a user, a system, or on their own behalf when interacting with protected resources. The OAuth 2.0 Authorization Framework {{RFC6749}} is widely deployed and defines an authorization delegation framework that enables an agent to obtain limited access to a service under well-defined policy constraints. An agent MUST use OAuth 2.0-based mechanisms to obtain authorization from a user, a system, or on its own behalf.
+Agents act on behalf of a user, a system, or on their own behalf when interacting with protected resources. The OAuth 2.0 Authorization Framework {{RFC6749}} is widely deployed and defines an authorization delegation framework that enables an agent to obtain limited access to a service under well-defined policy constraints. An agent MUST use OAuth 2.0-based mechanisms to obtain authorization from a user, a system, or on its own behalf. In all of these flows, an OAuth Authorization Server returns an access token, which the Agent presents to the protected resources (LLM or Tools) it needs to access to complete the request.
 
-In this framework, an agent may obtain authorization in two primary ways:
+## User Authorization Delegation
+In this framework, a User takes on the role of a OAuth Resource Owner and an Agent becomes an OAuth client while the the LLM and the Tools that the Agent access takes on the role of OAuth Resource Servers. These Resource Servers are protected by one or more OAuth Authorization Servers, which issues access tokens to the Agent. The Agent presents the access tokens to the LLM or the Tools in order to complete the task delegayed to it by the user. Agents MUST use the Authorization Code Flow as defined in Section 4.1 of {{RFC6749}} to obtain an access token.
 
-* **Delegated authorization**: A user or system authorizes the agent through the OAuth 2.0 Authorization Code Grant (see Section 4.1 of {{RFC6749}})
-* **Direct authorization** The agent obtains access on its own behalf using mechanisms such as the Client Credentials grant (see Section 4.4 of {{RFC6749}}) or the JWT Authorization grant {{OAuth.Private.JWT.Auth-RFC7523}}
+Perhaps the above is sufficient to point readers to the right material? 
+
+
+This sketch below feels like it may be too much detail.... but writing it in any event to see how it feels.
+~~~ ascii-art
+                    +----------------+
+                    | Large Language |
+                    |   Model (LLM)  |
+                    +----------------+
+                           ▲   |
+                          (8) (9)
+                           |   ▼
++--------------+       +------------+        +-----------+        +-----------+
+|              |──(1)─►|  AI Agent  |──(10)─►|  AI Tools |──(11)─►| Services  |
+|    User      |◄─(2)──| (workload) |        |           |        |   and     |
+|              |──(5)─►|            |◄─(13)──|           |◄─(12)──| Resources |
+|              |◄─(14)─|            |        |           |        |   and     |
++--------------+       +------------+        +-----------+        +-----------+
+       |    |               |   ▲
+      (4)  (3)             (6) (7)
+       |    |               ▼   | 
+       |    |       +----------------+
+       |    +------►|  OAuth         |
+       |            |  Authorization |
+       +------------|  Server        |
+                    +----------------+
+
+
+~~~
+{: #fig-user-authz-delegation title="User Authorization Delegation"}
+
+1. User initiates task
+2. Agent requires delegated authorization and redirects to the user.
+3. The user authenticates and provides authorization to the OAuth Authorization Server
+4. The Authroization Server returns an authorization code.
+5. The authorization code is sent to the agent
+6. The agent presents the authorization code to the OAuth authorization server
+7. The OAuth authorization server returns an access token to the Agent
+8. The Agent presents the access token to the LLM to request instructions based on the user prompt.
+9. The LLM return instruction on which Tools to call.
+10. The Agent presents the access token to the Tools as needed.
+11. The Tools access Services and Resources based on the access granted via the Access Token.
+12. The Services and Resources returns results to the Tool interface
+13. The Tool interface returns results to the Agent. Steps 8-13 are repeated until an exit condition is met.
+14. The Agent returns the result to the User.
+
+## Additional User Authorization
+If the authorrization delegated to the Agent is insufficient to complete a task, it MAY trigger a request for additional authorization from the user by using the OpenID foundation Client Initiated Backchannel Authentication (CIBA) protocol with the appropriate OAuth authorization server. This will trigger a request to the user to grant additional authorization (e.g. through a push notification). Once the user grant authorization, the authorization server issues an access token to the Agent which it may then use to complete the task.
+
+## System Authorization Delegation
+Rough sketch of this flow - the system already obtained an access token (how is out of scope for this section). It presents the Access Token to the Agent. The Agent exchanges the Access Token for another Access Token, using RFC8693 
+
+## Agent Requesting Authorization for Itself
+This one is just using client credentials flow, or JWT Authorization grant.
+
 
 ## Access Tokens and Agent Identity
-OAuth authorization results in the issuance of an access token that represents the granted authorization. In many deployments, access tokens are structured as JSON Web Tokens (JWTs) {{RFC9068}}, which include claims such as 'client_id', 'sub', 'aud', 'scope', and other attributes relevant to authorization. The 'client_id' MUST be associated with the agent’s identity and MAY be used by resource servers as a part of an authorization decision.
+OAuth authorization results in the issuance of an access token that represents the granted authorization. In many deployments, access tokens are structured as JSON Web Tokens (JWTs) {{RFC9068}}, which include claims such as 'client_id', 'sub', 'aud', 'scope', and other attributes relevant to authorization. The 'client_id' MUST be associated with the agent’s identity and SHOULD be used by resource servers as a part of an authorization decision.
 
 Additional claims may be included to convey contextual, attestation-derived, or policy-related information that enables fine-grained access control. Where JWT access tokens are not used, opaque tokens may be issued and validated through introspection mechanisms. This framework supports both models and does not require a specific token format, provided that equivalent authorization semantics are maintained.
 
