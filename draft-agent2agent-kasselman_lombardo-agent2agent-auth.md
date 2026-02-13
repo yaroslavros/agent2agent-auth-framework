@@ -335,7 +335,6 @@ Those phases rely on the following standards for enforcement of the access contr
 
 ## System to AI Agent
 ### (A) Negotiation - OPTIONAL
-
 #### Flow
 
 Following {{RFC9728}}, the System MUST act as an OAuth2 client. It MUST interact with the AI Agent on its metadata endpoint which MUST be an OAuth 2.0 protected resource as defined by {{RFC9728}}.
