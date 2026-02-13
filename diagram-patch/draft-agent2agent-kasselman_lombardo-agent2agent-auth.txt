@@ -131,20 +131,20 @@ Table of Contents
    through which the underlying Services and Resources are accessed by
    the Agent.
 
-                    +----------------+
-                    | Large Language |
-                    |   Model (LLM)  |
-                    +----------------+
-                           ▲   |
-                          (2) (3)              ┌───┐
-                           |   ▼               ▼   │
-+--------------+       +------------+       +-------------+       +-----------+
-|  User /      |──(1)─►|  AI Agent  |──(4)─►| Agent /     |──(5)─►| Services  |
-|      /       |       | (workload) |       |      /      |       |   and     |
-|     / System |◄─(8)──|            |◄─(7)──|     / Tools |◄─(6)──| Resources |
-+--------------+       +------------+       +-------------+       +-----------+
+                   +----------------+
+                   | Large Language |
+                   |   Model (LLM)  |
+                   +----------------+
+                          ^   |
+                         (2) (3)
+                          |   v
+   +----------+       +----------+       +---------+       +----------+
+   | User /   |--(1)->| AI Agent |--(4)->| Agent / |--(5)->| Services |
+   |    /     |       |  (work-  |       |    /    |       |   and    |
+   |  /System |<-(8)--|   load)  |<-(7)--|  /Tools |<-(6)--| Resource |
+   +----------+       +----------+       +---------+       +----------+
 
-                   Figure 1: AI Agent as a Workload
+                      Figure 1: AI Agent as a Workload
 
    1.  Optional: The User or System provides an initial request or
        instruction to the AI Agent.
@@ -469,22 +469,33 @@ Table of Contents
    [OAuth.TRAT] is new specification for formatting pieces of
    authorization in the form of transaction bound bearer tokens.
 
-   ``` +----------------+ | Large Language | | Model (LLM) |
-   +----------------+ ▲ | │ | ┌(H)┐ | ▼ ▼ │ +--------------+
-   +------------+ +-------------+ +-----------+ | User / |─(A)(C)─►| AI
-   Agent |─(E)(H)─►| Agent / |─(J)(M)─►| Services | | / | |
-   (workload) | | / | | and | | / System |◄────────| |◄────────| /
-   Tools |◄────────| Resources | +--------------+ +------------+
-   +-------------+ +-----------+ ▲ ▲ ▲ ▲ ▲ ▲ |
-   ┌──(F)─────────────┘ | | | | | | ┌───(D)───────────┘ (I) | | | | |
-   +---------------+ | (K) (N) (B) | | | Policy | | | | | | └─►|
-   Decision |◄─────────────────┘ | | | | |
-   Point |◄─────────────────────┼────────────────────┘ | |
-   +---------------+ | | | ▲ | | | (G)(L) | | | ▼ | | |
-   +---------------+ | | └─────►| Authorization |◄─────────────────────┘
-   └──────────►| server | +---------------+
-
-   ```
+                     +----------------+
+                     | Large Language |
+                     |   Model (LLM)  |
+                     +----------------+
+                            ^   |
+                            |   |
+                            |   v
+   +-----------+       +----------+       +---------+       +----------+
+   | User /    |-(A)-->| AI Agent |-(E)-->| Agent / |-(J)-->| Services |
+   |    /      |-(C)-->|  (work-  |-(H)-->|    /    |-(M)-->|   and    |
+   |  / System |<------|   load)  |<------|  /Tools |<------| Resource |
+   +-----------+       +----------+       +---------+       +----------+
+        ^                  ^  ^               ^   ^              ^
+        |    +-(F)---------+  |               |   |              |
+        |    |   +---(D)------+              (I)  |              |
+        |    |   |  +----------+              |  (K)            (N)
+       (B)   |   |  |  Policy  |              |   |              |
+        |    |   +->| Decision |<-------------+   |              |
+        |    |      |  Point   |<-----------------+--------------+
+        |    |      +----------+                  |
+        |    |           ^                        |
+        |    |        (G)(L)                      |
+        |    |           v                        |
+        |    |      +----------+                  |
+        |    +----->|  AuthZ   |<-----------------+
+        +---------->|  Server  |
+                    +----------+
 
       Key point - OAuth is broadly supported and provides a delegation
       model for users to clients (aka agents).  Agents can obtain access

@@ -1292,18 +1292,18 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <figure id="figure-1">
         <div class="alignLeft art-ascii-art art-text artwork" id="section-3-2.1">
 <pre>
-                    +----------------+
-                    | Large Language |
-                    |   Model (LLM)  |
-                    +----------------+
-                           ▲   |
-                          (2) (3)              ┌───┐
-                           |   ▼               ▼   │
-+--------------+       +------------+       +-------------+       +-----------+
-|  User /      |──(1)─►|  AI Agent  |──(4)─►| Agent /     |──(5)─►| Services  |
-|      /       |       | (workload) |       |      /      |       |   and     |
-|     / System |◄─(8)──|            |◄─(7)──|     / Tools |◄─(6)──| Resources |
-+--------------+       +------------+       +-------------+       +-----------+
+                +----------------+
+                | Large Language |
+                |   Model (LLM)  |
+                +----------------+
+                       ^   |
+                      (2) (3)
+                       |   v
++----------+       +----------+       +---------+       +----------+
+| User /   |--(1)-&gt;| AI Agent |--(4)-&gt;| Agent / |--(5)-&gt;| Services |
+|    /     |       |  (work-  |       |    /    |       |   and    |
+|  /System |&lt;-(8)--|   load)  |&lt;-(7)--|  /Tools |&lt;-(6)--| Resource |
++----------+       +----------+       +---------+       +----------+
 </pre>
 </div>
 <figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
@@ -1487,38 +1487,40 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 - <span>[<a href="#RFC6749" class="cite xref">RFC6749</a>]</span> is an established and maintained framework of specifications for requesting, acquiring, and proving ownership of pieces of authorization in the form of bearer tokens.
 - <span>[<a href="#OpenIDConnect.AuthZEN" class="cite xref">OpenIDConnect.AuthZEN</a>]</span> is a new specification for exchanging authorization requests and decisions between the layer acting at the Policy Enforcement Point (PEP) and a Policy Decision Point (PDP).
 - <span>[<a href="#OAuth.TRAT" class="cite xref">OAuth.TRAT</a>]</span> is new specification for formatting pieces of authorization in the form of transaction bound bearer tokens.<a href="#section-10-2" class="pilcrow">¶</a></p>
-<p id="section-10-3">```
-                       +----------------+
-                       | Large Language |
-                       |   Model (LLM)  |
-                       +----------------+
-                              ▲   |
-                              │   |               ┌(H)┐
-                              |   ▼               ▼   │
-+--------------+         +------------+         +-------------+         +-----------+
-|  User /      |─(A)(C)─►|  AI Agent  |─(E)(H)─►| Agent /     |─(J)(M)─►| Services  |
-|      /       |         | (workload) |         |      /      |         |   and     |
-|     / System |◄────────|            |◄────────|     / Tools |◄────────| Resources |
-+--------------+         +------------+         +-------------+         +-----------+
-     ▲                       ▲  ▲                   ▲   ▲                    ▲
-     |    ┌──(F)─────────────┘  |                   |   |                    |
-     |    |   ┌───(D)───────────┘                  (I)  |                    |
-     |    |   |  +---------------+                  |  (K)                  (N)
-    (B)   |   |  |    Policy     |                  |   |                    |
-     |    |   └─►|   Decision    |◄─────────────────┘   |                    |
-     |    |      |    Point      |◄─────────────────────┼────────────────────┘
-     |    |      +---------------+                      |
-     |    |             ▲                               |
-     |    |          (G)(L)                             |
-     |    |             ▼                               |
-     |    |      +---------------+                      |
-     |    └─────►| Authorization |◄─────────────────────┘
-     └──────────►|   server      |
-                 +---------------+<a href="#section-10-3" class="pilcrow">¶</a></p>
-<p id="section-10-4">```<a href="#section-10-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-ascii-art art-text artwork" id="section-10-3">
+<pre>
+                  +----------------+
+                  | Large Language |
+                  |   Model (LLM)  |
+                  +----------------+
+                         ^   |
+                         |   |
+                         |   v
++-----------+       +----------+       +---------+       +----------+
+| User /    |-(A)--&gt;| AI Agent |-(E)--&gt;| Agent / |-(J)--&gt;| Services |
+|    /      |-(C)--&gt;|  (work-  |-(H)--&gt;|    /    |-(M)--&gt;|   and    |
+|  / System |&lt;------|   load)  |&lt;------|  /Tools |&lt;------| Resource |
++-----------+       +----------+       +---------+       +----------+
+     ^                  ^  ^               ^   ^              ^
+     |    +-(F)---------+  |               |   |              |
+     |    |   +---(D)------+              (I)  |              |
+     |    |   |  +----------+              |  (K)            (N)
+    (B)   |   |  |  Policy  |              |   |              |
+     |    |   +-&gt;| Decision |&lt;-------------+   |              |
+     |    |      |  Point   |&lt;-----------------+--------------+
+     |    |      +----------+                  |
+     |    |           ^                        |
+     |    |        (G)(L)                      |
+     |    |           v                        |
+     |    |      +----------+                  |
+     |    +-----&gt;|  AuthZ   |&lt;-----------------+
+     +----------&gt;|  Server  |
+                 +----------+
+</pre><a href="#section-10-3" class="pilcrow">¶</a>
+</div>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-10-5.1">
-          <p id="section-10-5.1.1">Key point - OAuth is broadly supported and provides a delegation model for users to clients (aka agents). Agents can obtain access tokens directly (client credentials flow, using above authentication methods) or it can be delegated to them by a user (OAuth flows). Make point that the access token includes the client_id, which is the same as the Agent ID (ore related to it) and can be used for authorization decisions, along with other claims in an Access Token (reference JWT Access token spec). Make provision for opaque tokens as well. Discuss Downscoping of agent authorization using transaction tokens. Discuss cross-domain authorization (use cases) and how it may be achieved (identity chaining and cross-domain authorization). Discuss human in the loop authorization. Note concerns, refer to cross-device BCP as examples of consent phishing attacks. Talk about CIBA as a protocol.<a href="#section-10-5.1.1" class="pilcrow">¶</a></p>
+<li class="normal ulEmpty" id="section-10-4.1">
+          <p id="section-10-4.1.1">Key point - OAuth is broadly supported and provides a delegation model for users to clients (aka agents). Agents can obtain access tokens directly (client credentials flow, using above authentication methods) or it can be delegated to them by a user (OAuth flows). Make point that the access token includes the client_id, which is the same as the Agent ID (ore related to it) and can be used for authorization decisions, along with other claims in an Access Token (reference JWT Access token spec). Make provision for opaque tokens as well. Discuss Downscoping of agent authorization using transaction tokens. Discuss cross-domain authorization (use cases) and how it may be achieved (identity chaining and cross-domain authorization). Discuss human in the loop authorization. Note concerns, refer to cross-device BCP as examples of consent phishing attacks. Talk about CIBA as a protocol.<a href="#section-10-4.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <div id="system-to-ai-agent">
