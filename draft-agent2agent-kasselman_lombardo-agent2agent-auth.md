@@ -192,8 +192,8 @@ An Agent is a workload that iteratively interacts with a Large Language Model (L
                        |   v
 +----------+       +----------+       +---------+       +----------+
 | User /   |--(1)->| AI Agent |--(4)->| Agent / |--(5)->| Services |
-|    /     |       |  (work-  |       |    /    |       |   and    |
-|  /System |<-(8)--|   load)  |<-(7)--|  /Tools |<-(6)--| Resource |
+|    /     |       |(workload)|       |    /    |       |   and    |
+|  /System |<-(8)--|          |<-(7)--|  /Tools |<-(6)--| Resource |
 +----------+       +----------+       +---------+       +----------+
 ~~~
 {: #fig-agent-basic title="AI Agent as a Workload"}
@@ -305,12 +305,12 @@ Those phases rely on the following standards for enforcement of the access contr
                   |   Model (LLM)  |
                   +----------------+
                          ^   |
-                         |   |
-                         |   v
+                         |   |           +(H)+
+                         |   v           v   |
 +-----------+       +----------+       +---------+       +----------+
 | User /    |-(A)-->| AI Agent |-(E)-->| Agent / |-(J)-->| Services |
-|    /      |-(C)-->|  (work-  |-(H)-->|    /    |-(M)-->|   and    |
-|  / System |<------|   load)  |<------|  /Tools |<------| Resource |
+|    /      |-(C)-->|(workload)|-(H)-->|    /    |-(M)-->|   and    |
+|  / System |<------|          |<------|  /Tools |<------| Resource |
 +-----------+       +----------+       +---------+       +----------+
      ^                  ^  ^               ^   ^              ^
      |    +-(F)---------+  |               |   |              |
