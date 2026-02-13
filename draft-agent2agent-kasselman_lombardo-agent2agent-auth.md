@@ -183,18 +183,18 @@ TODO Introduction
 An Agent is a workload that iteratively interacts with a Large Language Model (LLM) and a set of tools that expose interfaces to underlying services and resources until a terminating condition, determined either by the LLM or by the agent’s internal logic, is reached. It may receive input from a user, or act autonomusly. {{fig-agent-basic}} shows a conceptual model of the AI Agent as a workload and illustrates the high-level interaction model between the User or System, the AI Agent, the Large Language Model (LLM) and the Tools through which the underlying Services and Resources are accessed by the Agent.
 
 ~~~ ascii-art
-                    +----------------+
-                    | Large Language |
-                    |   Model (LLM)  |
-                    +----------------+
-                           ▲   |
-                          (2) (3)              ┌───┐
-                           |   ▼               ▼   │
-+--------------+       +------------+       +-------------+       +-----------+
-|  User /      |──(1)─►|  AI Agent  |──(4)─►| Agent /     |──(5)─►| Services  |
-|      /       |       | (workload) |       |      /      |       |   and     |
-|     / System |◄─(8)──|            |◄─(7)──|     / Tools |◄─(6)──| Resources |
-+--------------+       +------------+       +-------------+       +-----------+
+                +----------------+
+                | Large Language |
+                |   Model (LLM)  |
+                +----------------+
+                       ^   |
+                      (2) (3)
+                       |   v
++----------+       +----------+       +---------+       +----------+
+| User /   |--(1)->| AI Agent |--(4)->| Agent / |--(5)->| Services |
+|    /     |       |  (work-  |       |    /    |       |   and    |
+|  /System |<-(8)--|   load)  |<-(7)--|  /Tools |<-(6)--| Resource |
++----------+       +----------+       +---------+       +----------+
 ~~~
 {: #fig-agent-basic title="AI Agent as a Workload"}
 
@@ -299,36 +299,35 @@ Those phases rely on the following standards for enforcement of the access contr
 - {{OpenIDConnect.AuthZEN}} is a new specification for exchanging authorization requests and decisions between the layer acting at the Policy Enforcement Point (PEP) and a Policy Decision Point (PDP).
 - {{OAuth.TRAT}} is new specification for formatting pieces of authorization in the form of transaction bound bearer tokens.
 
-```
-                       +----------------+
-                       | Large Language |
-                       |   Model (LLM)  |
-                       +----------------+
-                              ▲   |
-                              │   |               ┌(H)┐
-                              |   ▼               ▼   │
-+--------------+         +------------+         +-------------+         +-----------+
-|  User /      |─(A)(C)─►|  AI Agent  |─(E)(H)─►| Agent /     |─(J)(M)─►| Services  |
-|      /       |         | (workload) |         |      /      |         |   and     |
-|     / System |◄────────|            |◄────────|     / Tools |◄────────| Resources |
-+--------------+         +------------+         +-------------+         +-----------+
-     ▲                       ▲  ▲                   ▲   ▲                    ▲
-     |    ┌──(F)─────────────┘  |                   |   |                    |
-     |    |   ┌───(D)───────────┘                  (I)  |                    |
-     |    |   |  +---------------+                  |  (K)                  (N)
-    (B)   |   |  |    Policy     |                  |   |                    |
-     |    |   └─►|   Decision    |◄─────────────────┘   |                    |
-     |    |      |    Point      |◄─────────────────────┼────────────────────┘
-     |    |      +---------------+                      |
-     |    |             ▲                               |
-     |    |          (G)(L)                             |
-     |    |             ▼                               |
-     |    |      +---------------+                      |
-     |    └─────►| Authorization |◄─────────────────────┘
-     └──────────►|   server      |
-                 +---------------+
-
-```
+~~~ ascii-art
+                  +----------------+
+                  | Large Language |
+                  |   Model (LLM)  |
+                  +----------------+
+                         ^   |
+                         |   |
+                         |   v
++-----------+       +----------+       +---------+       +----------+
+| User /    |-(A)-->| AI Agent |-(E)-->| Agent / |-(J)-->| Services |
+|    /      |-(C)-->|  (work-  |-(H)-->|    /    |-(M)-->|   and    |
+|  / System |<------|   load)  |<------|  /Tools |<------| Resource |
++-----------+       +----------+       +---------+       +----------+
+     ^                  ^  ^               ^   ^              ^
+     |    +-(F)---------+  |               |   |              |
+     |    |   +---(D)------+              (I)  |              |
+     |    |   |  +----------+              |  (K)            (N)
+    (B)   |   |  |  Policy  |              |   |              |
+     |    |   +->| Decision |<-------------+   |              |
+     |    |      |  Point   |<-----------------+--------------+
+     |    |      +----------+                  |
+     |    |           ^                        |
+     |    |        (G)(L)                      |
+     |    |           v                        |
+     |    |      +----------+                  |
+     |    +----->|  AuthZ   |<-----------------+
+     +---------->|  Server  |
+                 +----------+
+~~~
 
 > Key point - OAuth is broadly supported and provides a delegation model for users to clients (aka agents). Agents can obtain access tokens directly (client credentials flow, using above authentication methods) or it can be delegated to them by a user (OAuth flows). Make point that the access token includes the client_id, which is the same as the Agent ID (ore related to it) and can be used for authorization decisions, along with other claims in an Access Token (reference JWT Access token spec). Make provision for opaque tokens as well. Discuss Downscoping of agent authorization using transaction tokens. Discuss cross-domain authorization (use cases) and how it may be achieved (identity chaining and cross-domain authorization). Discuss human in the loop authorization. Note concerns, refer to cross-device BCP as examples of consent phishing attacks. Talk about CIBA as a protocol.
 
