@@ -335,18 +335,19 @@ Those phases rely on the following standards for enforcement of the access contr
 
 ## System to AI Agent
 ### (A) Negotiation - OPTIONAL
-#### Flow
+
+**Flow:**
 Following {{RFC9728}}, the System MUST act as an OAuth2 client. It MUST interact with the AI Agent on its metadata endpoint which MUST be an OAuth 2.0 protected resource as defined by {{RFC9728}}.
 
 The System will then understand which Authorization Server MUST be the authority this AI Agent; which scopes or authorization details values MAY be required to access this AI Agent; and if extension mechanisms MAY be required to fulfil.
 
-#### Security
+**Security:**
 The System MUST follow the best current practices described in {{RFC9700}}.
 
 ### (B) Initial Authorization
 Based on the information collected as part of (A) or based on its configuration, the System MUST initiate an authorization request to the Authorization Server acting as authority for the AI Agent.
 
-#### Flow
+**Flow:**
 For this, the System MUST use one of the grant types described in {{RFC6749}} as follows:
 
 - In a case of the System is acting on its behalf, it MUST start a client credential grant flow as described in section 1.3.4 of {{RFC6749}};
@@ -355,12 +356,12 @@ For this, the System MUST use one of the grant types described in {{RFC6749}} as
   - If the System has limited input capabilities, but the User is present at the device, the System MUST use the Device Authorization Grant {{RFC8628}};
   - If the User is not present at the consuming device (decoupled flow), the System MUST use Client-Initiated Backchannel Authentication {{OpenIDConnect.CIBA}}.
 
-#### Extensions
+**Extensions:**
 As part of the grant flow, the User / System MUST also fulfill all the expected extensions it has an understanding of. For example, not exhaustively:
 - Binding the requested tokens to a possessed key as defined in {{RFC9449}} or {#wpt}
 - Requesting additional authorization details as defined in {{RFC9396}} or {{RFC9126}}
 
-#### Identification
+**Identification:**
 The System MUST act as an OAuth2 Client which MAY be assigned a WIMSE identifier, which MAY be a SPIFFE ID.
 
 If so, the System MUST provide a way to resolve one value to the other, either through:
@@ -368,26 +369,27 @@ If so, the System MUST provide a way to resolve one value to the other, either t
 - Metadata information provided as part of the Private Key JWT OAuth client credential as defined in {{OAuth.Private.JWT.Auth-RFC7523}}
 - Public Certificate information provided as part of the mutual TLS OAuth client credential as defined in {{OAuth.mTLS.Auth-RFC8705}}
 
-#### Authentication
-
+**Authentication:**
 The System MUST authentication using either:
 - Private Key JWT OAuth client authentication as defined in {{OAuth.Private.JWT.Auth-RFC7523}}
 - Mutual TLS OAuth client authentication as defined in {{OAuth.mTLS.Auth-RFC8705}}
 
-#### Security
+**Security:**
 The System MUST follow the best current practices described in {{RFC9700}} for the interactions with the AI Agent and {{RFC8725}} when handling JWTs.
 
 ### (C) Access to the AI Agent
-#### Flow
+
+**Flow:**
 To access an AI Agent, the System MUST present its authorization credential as defined in section 7 of {{RFC6749}} as well as defined in {{RFC6750}}. The client MUST be able to process error codes as defined in section 3 of {{RFC6750}}.
 
 The AI Agent MAY request additional details to be provided through a new authorization credentials using {{OAuth.step-up.Auth-RFC9470}} or error codes as defined in {{RFC6750}}.
 
-#### Security
+**Security:**
 The client MUST follow the best current practices described in {{RFC9700}}.
 
 ### (D) Controlling access to the AI Agent
-#### Flow
+
+**Flow:**
 The AI Agent MUST validate the presented token as described in {{RFC6749}} as well as defined in {{RFC6750}}.
 
 If token introspection is required, the AI Agent MUST follow {{RFC7662}} as well as {{RFC9701}}.
@@ -396,7 +398,7 @@ If the provided token is a JWT profiled token as defined in {{RFC9068}}, the AI 
 
 If the AI Agent delegates its access control logic to a Policy decision point, it MUST follow {{OpenIDConnect.AuthZEN}} specification for requesting and receiving a decision for the access.
 
-#### Security
+**Security:**
 TODO
 
 ## AI Agent To Other Agent / Tools
@@ -405,10 +407,11 @@ Interactions between an AI Agent and Tools are globally specified by {{MCP}}. Th
 Interactions between an AI Agent and other AI Agents are globally specified by {{A2A}}. Note that derived specifications and domain specific specification have emerged like {{AP2}} for Agent payment interaction, {{ACP}} for Agent to commerce flows. Those sections only focus on the Identification, authentication, and authorization aspects of those specifications.
 
 ### (E) Negotiation
-#### Case of a Tool
+
+**Case of a Tool:**
 Following {{MCP}}, the AI Agent MUST interact with Tools on the metadata endpoint of an OAuth 2.0 protected resource to understand which Authorization Server is the authority this resource; which scopes or authorization details values MAY be required to access this resources; and if proof of possession needs to be presented as standardized with {{RFC9449}}.
 
-#### Case of an Agent
+**Case of an Agent:**
 Following {{A2A}}, the AI Agent MUST interact with the other Agent through their Agent Card. If Extended Agent Card is implemented, the calling AI Agent MUST collect the information to understand which Authorization Server is the authority this resource; which scopes or authorization details values MAY be required to access this resources; and if proof of possession needs to be presented as standardized with {{RFC9449}}.
 
 {{ACP}} and {{AP2}} Agents are expected to follow the same Agent Card feature as {{A2A}} Agents.
