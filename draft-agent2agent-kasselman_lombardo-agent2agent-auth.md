@@ -147,7 +147,7 @@ normative:
   OAuth.CIMD:
     title: OAuth Client ID Metadata Document
     target: https://datatracker.ietf.org/doc/draft-ietf-oauth-client-id-metadata-document
-  OAuth.IDJAG
+  OAuth.IDJAG:
     title: Identity Assertion JWT Authorization Grant
     target: https://datatracker.ietf.org/doc/draft-ietf-oauth-identity-assertion-authz-grant/01/
   OAuth.IDChaining:
