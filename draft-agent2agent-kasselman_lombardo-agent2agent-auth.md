@@ -28,7 +28,6 @@ author:
     fullname: Pieter Kasselman
     organization: DeFakto
     email: "pieter@defakto.security"
-
  -
     fullname: Jean-François Lombardo
     nickname: Jeff
@@ -286,7 +285,7 @@ Although the draft currently defines detailed usage for HTTP (via a Workload-Pro
 The WIMSE Workload-to-Workload Authentication with HTTP Signatures specification {{WIMSE_HTTPSIG}} defines an application-layer authentication profile built on the HTTP Message Signatures standard {{RFC9421}}. It is one of the mechanisms WIMSE defines for authenticating workloads in HTTP-based interactions where transport-layer protections may be insufficient or unavailable. The protocol combines a workload’s Workload Identity Token (WIT), which conveys attested identity and binds a public key, with HTTP Message Signatures using the corresponding private key, thereby providing proof of possession and message integrity for individual HTTP requests and responses. This approach ensures end-to-end authentication and integrity even when traffic traverses intermediaries such as TLS proxies or load balancers that break transport-layer identity continuity. The profile mandates signing of key request components (e.g., method, target, content digest, and the WIT itself) and supports optional response signing to ensure full protection of workload-to-workload exchanges.
 
 # Agent Authorization
-Agents act on behalf of a user, a system, or on their own behalf as shown in {{fig-agent-basic}} and needs to obtain authorization when interacting with protected resources. 
+Agents act on behalf of a user, a system, or on their own behalf as shown in {{fig-agent-basic}} and needs to obtain authorization when interacting with protected resources.
 
 ## Leverage OAuth 2.0 as a Delegation Authorization Framework
 The OAuth 2.0 Authorization Framework {{RFC6749}} is widely deployed and defines an authorization delegation framework that enables an agent to obtain limited access to a protected resource (e.g. a service or API) under well-defined policy constraints. An agent MUST use OAuth 2.0-based mechanisms to obtain authorization from a user, a system, or on its own behalf. OAuth 2.0 defines a wide range of authorization grant flows that supports these scenarios. In these Oauth 2.0 flows, an Agent acts as an OAuth 2.0 Client to an OAuth 2.0 Authorization Server, which receives the request, evaluate the authorization policy and returns an access token, which the Agent presents to the Resource Server (i.e. the protected resources such as the LLM or Tools in {{fig-agent-basic}}) it needs to access to complete the request.
@@ -297,7 +296,7 @@ An OAuth access token represents the authorization granted to the Agent. In many
 ## Obtaining an OAuth 2.0 Access Token
 Agents MUST obtain OAuth 2.0 accss tokens using standards OAuth 2.0 Authorization Flows.
 
-When obtaining an access token on-behalf of a user, the Authorization Code Grant MUST be used as described in Section 4.1 of {{RFC6749}}. 
+When obtaining an access token on-behalf of a user, the Authorization Code Grant MUST be used as described in Section 4.1 of {{RFC6749}}.
 
 Agents obtaining access tokens on their own behalf MUST use the Client Credentials Grant as described in Section 4.4 of {{RFC6749}} or the JWT Authorization Grant as described in section 2.1. of {{OAuth.Private.JWT.Auth-RFC7523}}. When using the Client Credentials Grant, the Agent MUST authenticate itself using one of the mechanisms described in {{agent_authentication}} and MUST NOT use static, long lived client secrets to authenticate.
 
@@ -325,10 +324,9 @@ OAuth Identity and Authorization Chaining Across Domains ({{OAuth.IDChaining}}) 
 An OAuth authorization server MAY conclude that the level of access to a resource that an Agent, LLM or Tool is requesting requires additional authorization from the User. When it determines that additional authorization is required, it SHOULD either decline the request or request additional authorization from the User by using the OpenID foundation Client Initiated Backchannel Authentication (CIBA). This will trigger a request to the user to grant additional authorization (e.g. through a push notification). Once the user grant authorization, the authorization server issues an access token to the Agent which it may then use to complete the task.
 
 ## Tool-to-Service Acccess
-Tools expose interfaces to underlying services and resources. Access to the Tools SHOULD be controlled by OAuth which MAY be augmented by policy, attribute or role based authorization systems (amongst others). If the Tools are implemented as one or more microservices, it should use transaction tokens to reduce risk as described in {{trat-risk-reduction}} to avoid passing access tokens around within the Tool implementation. 
+Tools expose interfaces to underlying services and resources. Access to the Tools SHOULD be controlled by OAuth which MAY be augmented by policy, attribute or role based authorization systems (amongst others). If the Tools are implemented as one or more microservices, it should use transaction tokens to reduce risk as described in {{trat-risk-reduction}} to avoid passing access tokens around within the Tool implementation.
 
 Access from the Tools to the resources and services MAY be controlled through a variety of auhtorization mechanisms, includidng OAuth. If access is controlled through OAuth, the Tools SHOULD use OAuth 2.0 Token Exchange as defined in {{RFC8693}} to exchange the access token it received for a new access token to access the resource or service in question. If the Tool needs acces to a resource protected by an auhtorization server other than the Tool's own authorization server, it SHOULD use the OAuth Identity and Authorization Chaining Across Domains ({{OAuth.IDChaining}}) to obtain an access token from the authroization server protecting the resource it needs to access.
-
 
 -----------------------End of "High Level Map"------------------------------
 
