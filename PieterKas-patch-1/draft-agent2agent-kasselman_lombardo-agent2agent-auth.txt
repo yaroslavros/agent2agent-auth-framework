@@ -954,7 +954,8 @@ Table of Contents
 
    [OAuth.IDChaining]
               "OAuth Identity and Authorization Chaining Across
-              Domains", n.d..
+              Domains", n.d., <https://datatracker.ietf.org/doc/draft-
+              ietf-oauth-identity-chaining/>.
 
    [OAuth.IDJAG]
               "Identity Assertion JWT Authorization Grant", n.d.,
@@ -963,21 +964,22 @@ Table of Contents
 
    [OAuth.mTLS.Auth-RFC8705]
               "OAuth 2.0 Mutual-TLS Client Authentication and
-              Certificate-Bound Access Tokens", n.d..
+              Certificate-Bound Access Tokens", n.d.,
+              <https://datatracker.ietf.org/doc/html/rfc8705>.
 
    [OAuth.Private.JWT.Auth-RFC7523]
               "JSON Web Token (JWT) Profile for OAuth 2.0 Client
               Authentication and Authorization Grants", n.d.,
               <https://datatracker.ietf.org/doc/html/rfc7523>.
 
-   [OAuth.SPIFFE.CLient.Auth]
+   [OAuth.SPIFFE.Client.Auth]
               "OAuth SPIFFE Client Authentication", n.d.,
               <https://datatracker.ietf.org/doc/draft-ietf-oauth-spiffe-
               client-auth>.
 
    [OAuth.step-up.Auth-RFC9470]
               "OAuth 2.0 Step Up Authentication Challenge Protocol",
-              n.d..
+              n.d., <https://www.rfc-editor.org/rfc/rfc9470.html>.
 
    [OAuth.TRAT]
               "Transaction Tokens", n.d.,
@@ -1026,10 +1028,8 @@ Table of Contents
    [RFC9126]  "OAuth 2.0 Pushed Authorization Requests", n.d.,
               <https://datatracker.ietf.org/doc/rfc9126>.
 
-   [RFC9334]  Birkholz, H., Thaler, D., Richardson, M., Smith, N., and
-              W. Pan, "Remote ATtestation procedureS (RATS)
-              Architecture", RFC 9334, DOI 10.17487/RFC9334, January
-              2023, <https://www.rfc-editor.org/rfc/rfc9334>.
+   [RFC9334]  "Remote ATtestation procedureS (RATS) Architecture", n.d.,
+              <https://datatracker.ietf.org/doc/rfc9334/>.
 
    [RFC9396]  "OAuth 2.0 Rich Authorization Requests", n.d.,
               <https://datatracker.ietf.org/doc/rfc9396>.
