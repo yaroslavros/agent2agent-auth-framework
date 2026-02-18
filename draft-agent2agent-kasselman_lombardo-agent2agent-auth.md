@@ -175,6 +175,15 @@ normative:
   CAEP:
     title: OpenID Continuous Access Evaluation Profile 1.0
     target: https://openid.net/specs/openid-caep-1_0-final.html
+  A2A:
+    title: Agent2Agent (A2A) Protocol
+    target: https://github.com/a2aproject/A2A
+  ACP:
+    title: Agentic Commerce Protocol
+    target: https://www.agenticcommerce.dev/docs
+  AP2:
+    title: Agent Payments Protocol (AP2)
+    target: https://github.com/google-agentic-commerce/AP2
 
 informative:
 
@@ -207,7 +216,7 @@ An Agent is a workload that iteratively interacts with a Large Language Model (L
                           (2) (3)
                            |   ▼
 +--------------+       +------------+       +-----------+       +-----------+
-|  User /      |──(1)─►|  AI Agent  |──(4)─►|  AI Tools |──(5)─►| Services  |
+|  User /      |──(1)─►|  AI Agent  |──(4)─►|   Tools   |──(5)─►| Services  |
 |      /       |       | (workload) |       |           |       |   and     |
 |     / System |◄─(8)──|            |◄─(7)──|           |◄─(6)──| Resources |
 +--------------+       +------------+       +-----------+       +-----------+
@@ -215,10 +224,10 @@ An Agent is a workload that iteratively interacts with a Large Language Model (L
 Figure 1: AI Agent as a Workload
 ~~~
 
-1. Optional: The User or System provides an initial request or instruction to the AI Agent.
+1. Optional: The User or System (e.g. a batch job or another Agent) provides an initial request or instruction to the AI Agent.
 2. The AI Agent forwards the available context to the LLM. Context is implementation and deployment specific and may include User or System input, system prompt, tool descriptions, tool outputs and other relevant information.
-3. The LLM returns a response to the AI Agent identifying which tools it should invoke.
-4. Based on the LLM’s output, the AI Agent invokes the relevant Tools.
+3. The LLM returns a response to the AI Agent identifying which Tools it should invoke.
+4. Based on the LLM’s output, the AI Agent invokes the relevant Tools (note that a Tool may be another Agent).
 5. The Tools interacts with the underlying Services and Resources required to fulfill the requested operation.
 6. The underlying Services and Resources returns the information requested by the Tools.
 7. The Tools returns the information collected from the Services and Resources to the AI Agent, which sends the information as additional context to the Large Langugage Model, repeating steps 2-7 until the exit condition is reached and the task is completed.
@@ -422,20 +431,20 @@ Those phases rely on the following standards for enforcement of the access contr
                        |   Model (LLM)  |
                        +----------------+
                               ▲   |
-                              │   |
-                              |   ▼
-+--------------+         +------------+         +-----------+         +-----------+
-|  User /      |─(A)(C)─►|  AI Agent  |─(E)(H)─►| AI Tools  |─(J)(M)─►| Services  |
-|      /       |         | (workload) |         |           |         |   and     |
-|     / System |◄────────|            |◄────────|           |◄────────| Resources |
-+--------------+         +------------+         +-----------+         +-----------+
-     ▲                       ▲  ▲                   ▲   ▲                ▲
-     |    ┌──(F)─────────────┘  |                   |   |                |
-     |    |   ┌───(D)───────────┘                  (I)  |                |
-     |    |   |  +---------------+                  |  (K)              (N)
-    (B)   |   |  |    Policy     |                  |   |                |
-     |    |   └─►|   Decision    |◄─────────────────┘   |                |
-     |    |      |    Point      |◄─────────────────────┼────────────────┘
+                              │   |               ┌(H)┐
+                              |   ▼               ▼   │ 
++--------------+         +------------+         +-------------+         +-----------+
+|  User /      |─(A)(C)─►|  AI Agent  |─(E)(H)─►| Agent /     |─(J)(M)─►| Services  |
+|      /       |         | (workload) |         |      /      |         |   and     |
+|     / System |◄────────|            |◄────────|     / Tools |◄────────| Resources |
++--------------+         +------------+         +-------------+         +-----------+
+     ▲                       ▲  ▲                   ▲   ▲                    ▲
+     |    ┌──(F)─────────────┘  |                   |   |                    |
+     |    |   ┌───(D)───────────┘                  (I)  |                    |
+     |    |   |  +---------------+                  |  (K)                  (N)
+    (B)   |   |  |    Policy     |                  |   |                    |
+     |    |   └─►|   Decision    |◄─────────────────┘   |                    |
+     |    |      |    Point      |◄─────────────────────┼────────────────────┘
      |    |      +---------------+                      |
      |    |             ▲                               |
      |    |          (G)(L)                             |
@@ -529,13 +538,22 @@ If the AI Agent delegates its access control logic to a Policy decision point, i
 
 TODO
 
-## AI Agent to AI tools
+## AI Agent To Other Agent / Tools
 
-> Interactions between an AI Agent and AI Tools are globally specified by {{MCP}}. Those sections explain the core specification, {{MCP}} is based on as well as the complementary specifications RECOMMENDED.
+Interactions between an AI Agent and Tools are globally specified by {{MCP}}. Those sections only focus on the Identification, authentication, and authorization aspects of the specification.
+
+Interactions between an AI Agent and other AI Agents are globally specified by {{A2A}}. Note that derived specifications and domain specific specification have emerged like {{AP2}} for Agent payment interaction, {{ACP}} for Agent to commerce flows. Those sections only focus on the Identification, authentication, and authorization aspects of those specifications.
 
 ### (E) Negotiation
 
-Following {{RFC9728}}, the AI Agent MUST interact with AI Tools on the metadata endpoint of an OAuth 2.0 protected resource to understand which Authorization Server is the authority this resource; which scopes or authorization details values MAY be required to access this resources; and if proof of possession needs to be presented as standardized with {{RFC9449}}.
+#### Case of a Tool
+Following {{MCP}}, the AI Agent MUST interact with Tools on the metadata endpoint of an OAuth 2.0 protected resource to understand which Authorization Server is the authority this resource; which scopes or authorization details values MAY be required to access this resources; and if proof of possession needs to be presented as standardized with {{RFC9449}}.
+
+#### Case of an Agent
+
+Following {{A2A}}, the AI Agent MUST interact with the other Agent through their Agent Card. If Extended Agent Card is implemented, the calling AI Agent MUST collect the information to understand which Authorization Server is the authority this resource; which scopes or authorization details values MAY be required to access this resources; and if proof of possession needs to be presented as standardized with {{RFC9449}}.
+
+{{ACP}} and {{AP2}} Agents are expected to follow the same Agent Card feature as {{A2A}} Agents.
 
 ### (F) AI Agent Authorization
 
@@ -552,7 +570,13 @@ Such authorization request can allow to down, change or translate scope; enrich 
     - Start a token exchange flow as described in {{RFC8693}}. The AI Agent will be able to decide in between obtaining tokens representing a Delegation or an Impersonation as described in section 1.1 of the specification.
     - Start a client initated backchannel authorized request as described in {{OpenIDConnect.CIBA}}
 
+If the AI Agent knows that the underlying actions 
+
 > Transaction Tokens
+
+### Security
+
+If the metadata documents are cryptographically signed, the AI Agent MUST validate the signature before using the information for any authentication and authorization decision.
 
 ## Agent-to-Resource Authorization
 Present token, peform additional authorization (RBAC etc?)
