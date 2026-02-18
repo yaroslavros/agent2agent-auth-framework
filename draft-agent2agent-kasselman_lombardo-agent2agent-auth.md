@@ -337,22 +337,24 @@ The WIMSE Workload-to-Workload Authentication with HTTP Signatures specification
 Agents act on behalf of a user, a system, or on their own behalf as shown in Figure 1 and needs to obtain authorization when interacting with protected resources.
 
 ## Leverage OAuth 2.0 as a Delegation Authorization Framework
-The OAuth 2.0 Authorization Framework {{RFC6749}} is widely deployed and defines an authorization delegation framework that enables an agent to obtain limited access to a protected resource (e.g. a service or API) under well-defined policy constraints. An agent MUST use OAuth 2.0-based mechanisms to obtain authorization from a user, a system, or on its own behalf. OAuth 2.0 defines a wide range of authorization grant flows that supports these scenarios. In these Oauth 2.0 flows, an Agent acts as an OAuth 2.0 Client to an OAuth 2.0 Authorization Server, which receives the request, evaluate the authorization policy and returns an access token, which the Agent presents to the Resource Server (i.e. the protected resources such as the LLM or Tools in Figure 1) it needs to access to complete the request.
+The OAuth 2.0 Authorization Framework {{RFC6749}} is widely deployed and defines an authorization delegation framework that enables an Agent to obtain limited access to a protected resource (e.g. a service or API) under well-defined policy constraints. An Agent MUST use OAuth 2.0-based mechanisms to obtain authorization from a user, a system, or on its own behalf. OAuth 2.0 defines a wide range of authorization grant flows that supports these scenarios. In these Oauth 2.0 flows, an Agent acts as an OAuth 2.0 Client to an OAuth 2.0 Authorization Server, which receives the request, evaluate the authorization policy and returns an access token, which the Agent presents to the Resource Server (i.e. the protected resources such as the LLM or Tools in Figure 1) it needs to access to complete the request.
 
 ## Use of OAuth 2.0 Access Tokens
-An OAuth access token represents the authorization granted to the Agent. In many deployments, access tokens are structured as JSON Web Tokens (JWTs) {{RFC9068}}, which include claims such as 'client_id', 'sub', 'aud', 'scope', and other attributes relevant to authorization. The access token MUST include the Agent identity as the 'client_id' claim as defined in Section 2.2 of {{RFC9068}}. If the Agent is acting on-behalf of another user or system, it MUST include the user or system identifier in the 'sub' claim as defined in Section 2.2 of {{RFC9068}}. These identitifiers MUST be used by resource servers protected by the OAuth 2.0 authorization service, along with other claims in the access token, to determine if access to a resource should be allowed. The acccess token MAY include additional claims to convey contextual, attestation-derived, or policy-related information that enables fine-grained access control. The resource server MAY use the access token and the information it contains along with other authorization systems (e.g. policy based, attribute based or role based authorization systems) when enforcing access. Where JWT access tokens are not used, opaque tokens may be issued and validated through introspection mechanisms. This framework supports both models and does not require a specific token format, provided that equivalent authorization semantics are maintained.
+An OAuth access token represents the authorization granted to the Agent. In many deployments, access tokens are structured as JSON Web Tokens (JWTs) {{RFC9068}}, which include claims such as 'client_id', 'sub', 'aud', 'scope', and other attributes relevant to authorization. The access token MUST include the Agent identity as the 'client_id' claim as defined in Section 2.2 of {{RFC9068}}. 
+
+If the Agent is acting on-behalf of another user or system, it MUST include the user or system identifier in the 'sub' claim as defined in Section 2.2 of {{RFC9068}}. These identitifiers MUST be used by resource servers protected by the OAuth 2.0 authorization service, along with other claims in the access token, to determine if access to a resource should be allowed. The acccess token MAY include additional claims to convey contextual, attestation-derived, or policy-related information that enables fine-grained access control. The resource server MAY use the access token and the information it contains along with other authorization systems (e.g. policy based, attribute based or role based authorization systems) when enforcing access. Where JWT access tokens are not used, opaque tokens may be issued and validated through introspection mechanisms. This framework supports both models and does not require a specific token format, provided that equivalent authorization semantics are maintained.
 
 ## Obtaining an OAuth 2.0 Access Token
 Agents MUST obtain OAuth 2.0 accss tokens using standards OAuth 2.0 Authorization Flows.
 
 ### User Delegates Authorization
-When obtaining an access token on-behalf of a user, the Authorization Code Grant MUST be used as described in Section 4.1 of {{RFC6749}}.
+When a User grants authorization to an Agent, the Authorization Code Grant MUST be used as described in Section 4.1 of {{RFC6749}}.
 
 ### Agent Obtains Own Authorization {#agent_obtains_own_access_token}
 Agents obtaining access tokens on their own behalf MUST use the Client Credentials Grant as described in Section 4.4 of {{RFC6749}} or the JWT Authorization Grant as described in section 2.1. of {{OAuth.Private.JWT.Auth-RFC7523}}. When using the Client Credentials Grant, the Agent MUST authenticate itself using one of the mechanisms described in {{agent_authentication}} and MUST NOT use static, long lived client secrets to authenticate.
 
 ### System Access to Agents
-When Agents are invoked by a System (e.g. a batcch job, or another Agent), the System SHOULD treat the Agent as an OAuth protected resource. The System SHOULD obtain an access token using the same mechanisms defined for an Agent and then present the OAuth access token to the Agent. The agent should validate the access token, including verifiying that the 'aud' claim of the access token includes the Agent. Once validated, the Agent SHOULD use OAuth 2.0 Token Exchange as defined in {{RFC8693}} to exchange the access token it received for a new access token to access. The Agent then uses the newly issued access token to access the protected resources (LLM or Tools) it needs to complete the request.
+When Agents are invoked by a System (e.g. a batcch job, or another Agent), the System SHOULD treat the Agent as an OAuth protected resource. The System SHOULD obtain an access token using the same mechanisms defined for an Agent and then present the OAuth access token to the Agent. The Agent should validate the access token, including verifiying that the 'aud' claim of the access token includes the Agent. Once validated, the Agent SHOULD use OAuth 2.0 Token Exchange as defined in {{RFC8693}} to exchange the access token it received for a new access token to access. The Agent then uses the newly issued access token to access the protected resources (LLM or Tools) it needs to complete the request.
 
 If a System invokes an Agent and does not treat the Agent as an OAuth protected resource, the Agent MUST obtain its own OAuth access token as described in {#agent_obtains_own_access_token}.
 
@@ -384,7 +386,7 @@ Tools expose interfaces to underlying services and resources. Access to the Tool
 Access from the Tools to the resources and services MAY be controlled through a variety of auhtorization mechanisms, includidng OAuth. If access is controlled through OAuth, the Tools SHOULD use OAuth 2.0 Token Exchange as defined in {{RFC8693}} to exchange the access token it received for a new access token to access the resource or service in question. If the Tool needs acces to a resource protected by an auhtorization server other than the Tool's own authorization server, it SHOULD use the OAuth Identity and Authorization Chaining Across Domains ({{OAuth.IDChaining}}) to obtain an access token from the authroization server protecting the resource it needs to access.
 
 ## OAuth 2.0 Discovery in Dynamic Environments
-In dynamic agent deployments (e.g., ephemeral workloads, multi-tenant services, and frequently changing endpoint topology), Agents and other participants MAY use OAuth discovery mechanisms to reduce static configuration and to bind runtime decisions to verifiable metadata.
+In dynamic Agent deployments (e.g., ephemeral workloads, multi-tenant services, and frequently changing endpoint topology), Agents and other participants MAY use OAuth discovery mechanisms to reduce static configuration and to bind runtime decisions to verifiable metadata.
 
 ### Authorization Server Capability Discovery
 An Agent that needs to obtain tokens MAY discover authorization server endpoints and capabilities using OAuth 2.0 Authorization Server Metadata {{RFC8414}} and/or OpenID Connect Discovery {{OpenIDConnect.Discovery}}. This allows the Agent to learn the as issuer identifier, authorization and token endpoints, supported grant types, client authentication methods, signing keys (via jwks_uri), and other relevant capabilities without preconfiguring them.
@@ -435,7 +437,7 @@ This document has no IANA actions.
 
 # Agent Authorization - Next Level Detail
 
-During agent execution, authorization must be enforced at all the components involved in the process to provide an in-depth protection of the resources that might be interacted with. For each component, we must consider the following 3 phases:
+During Agent execution, authorization must be enforced at all the components involved in the process to provide an in-depth protection of the resources that might be interacted with. For each component, we must consider the following 3 phases:
 - Negotiation between the component and its caller on the required pieces of authorization required to interact with the component
 - Acquisition of the piece of authorization by the caller at the authorization server authoritative for the component it wants to communication
 - Validation of the piece of authorization in the context of the request by the component
@@ -476,7 +478,7 @@ Those phases rely on the following standards for enforcement of the access contr
 ~~~
 
 
-> Key point - OAuth is broadly supported and provides a delegation model for users to clients (aka agents). Agents can obtain access tokens directly (client credentials flow, using above authentication methods) or it can be delegated to them by a user (OAuth flows). Make point that the access token includes the client_id, which is the same as the Agent ID (ore related to it) and can be used for authorization decisions, along with other claims in an Access Token (reference JWT Access token spec). Make provision for opaque tokens as well. Discuss Downscoping of agent authorization using transaction tokens. Discuss cross-domain authorization (use cases) and how it may be achieved (identity chaining and cross-domain authorization). Discuss human in the loop authorization. Note concerns, refer to cross-device BCP as examples of consent phishing attacks. Talk about CIBA as a protocol.
+> Key point - OAuth is broadly supported and provides a delegation model for users to clients (aka Agents). Agents can obtain access tokens directly (client credentials flow, using above authentication methods) or it can be delegated to them by a user (OAuth flows). Make point that the access token includes the client_id, which is the same as the Agent ID (ore related to it) and can be used for authorization decisions, along with other claims in an Access Token (reference JWT Access token spec). Make provision for opaque tokens as well. Discuss Downscoping of Agent authorization using transaction tokens. Discuss cross-domain authorization (use cases) and how it may be achieved (identity chaining and cross-domain authorization). Discuss human in the loop authorization. Note concerns, refer to cross-device BCP as examples of consent phishing attacks. Talk about CIBA as a protocol.
 
 ## System to AI Agent
 ### (A) Negotiation - OPTIONAL
@@ -606,10 +608,10 @@ Resources, services.
 Agent -> Tool -> Service -> Resource
 
 ### Human-in-the loop
-Agent framework problem -> human in the loop - confirm something that it can already do - agent framework capability - confirmation. Risk management flow.
+Agent framework problem -> human in the loop - confirm something that it can already do - Agent framework capability - confirmation. Risk management flow.
 Human in the loop - request esalated privelages. Step-up authorization - refernece the draft (maybe)
 
-MCP Elicitation to agent to perform some browser things - start authz code grant flow.
+MCP Elicitation to Agent to perform some browser things - start authz code grant flow.
 CIBA
 
 ## Case of Multi-Domain Authorization
