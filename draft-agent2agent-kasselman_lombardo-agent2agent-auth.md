@@ -26,7 +26,7 @@ venue:
 author:
  -
     fullname: Pieter Kasselman
-    organization: DeFakto
+    organization: Defakto Security
     email: "pieter@defakto.security"
  -
     fullname: Jean-François Lombardo
@@ -397,7 +397,7 @@ When an Agent is invoking a Tool, the Agent MAY use OAuth 2.0 Protected Resource
 A Tool that atttempts to acccess and OAuth protected resource MAY use OAuth 2.0 Protected Resource Metadata {{RFC9728}} in a similar way as an Agent. Similarly, a System may use {{RFC9728}} when accessing an Agent.
 
 ### Client Capability Discovery
-Other actors (e.g., Authorization Servers, registrars, or policy systems) may need to learn about any entities (System, Agent, Tool) that acts as OAuth clients. Where supported, they MAY use Client ID Metadata Documents {{OAuth.CIMD}}, which allow a client to host its metadata at a URL-valued client_id so that the relying party can retrieve client properties (e.g., redirect URIs, software statement / display information, and other registered client metadata) without prior bilateral registration.
+Other actors (e.g., Authorization Servers, registrars, or policy systems) may need to learn about any entities (System, Agent, Tool) that acts as OAuth clients. Where supported, they MAY use Client ID Metadata Documents {{OAuth.CIMD}}, which allow a client to host its metadata at a URL-valued client_id so that the relying party can retrieve client properties (e.g., redirect URIs, software statement, display information, and other registered client metadata) without prior bilateral registration.
 
 As an alternative, entities acting as OAuth clients MAY register their capabilities with authroization servers as defined in the OAuth 2.0 Dynamic Client Registration Protocol {{RFC7591}}.
 
