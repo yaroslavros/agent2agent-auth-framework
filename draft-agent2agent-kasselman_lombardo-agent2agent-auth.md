@@ -250,6 +250,25 @@ An Agent Identity Management System ensure that the right Agent has access to th
 * **Agent Auhtentication and Authorization Policy:** The configuration and rules for each of the Agent Identity Management System.
 * **Agent Compliance:** Measurement of the state and fucntioning of the system against the stated policies.
 
+~~~ ascii-art
++--------------+----------------------------------+--------------+
+|    Policy    |   Monitoring & Remediation       |  Complaince  |
+|              +----------------------------------|              |
+|              |          Authorization           |              |
+|              +----------------------------------|              |
+|              |          Authentication          |              |
+|              +----------------------------------|              |
+|              |          Provisioning            |              |
+|              +----------------------------------|              |
+|              |           Attestation            |              |
+|              +----------------------------------|              |
+|              |           Credentials            |              |
+|              +----------------------------------|              |
+|              |         Agent Identifier         |              |
++--------------+----------------------------------+--------------+
+Figure 2: Agent Identity Management System
+~~~
+
 # Agent Identifier {#agent_identifiers}
 Agents MUST be uniquely identified to enable authentication and authorization. The Secure Production Identity Framework for Everyone (SPIFFE) identifier format is widely deployed and operationally mature. The SPIFFE workload identity model defines a SPIFFE identifier (SPIFFE ID) as a URI of the form `spiffe://<trust-domain>/<path>` that uniquely identifies a workload within a trust domain {{SPIFFE}}.
 
