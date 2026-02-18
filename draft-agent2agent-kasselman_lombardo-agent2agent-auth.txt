@@ -506,8 +506,8 @@ Table of Contents
 
    The OAuth 2.0 Authorization Framework [RFC6749] is widely deployed
    and defines an authorization delegation framework that enables an
-   agent to obtain limited access to a protected resource (e.g. a
-   service or API) under well-defined policy constraints.  An agent MUST
+   Agent to obtain limited access to a protected resource (e.g. a
+   service or API) under well-defined policy constraints.  An Agent MUST
    use OAuth 2.0-based mechanisms to obtain authorization from a user, a
    system, or on its own behalf.  OAuth 2.0 defines a wide range of
    authorization grant flows that supports these scenarios.  In these
@@ -525,10 +525,11 @@ Table of Contents
    Tokens (JWTs) [RFC9068], which include claims such as 'client_id',
    'sub', 'aud', 'scope', and other attributes relevant to
    authorization.  The access token MUST include the Agent identity as
-   the 'client_id' claim as defined in Section 2.2 of [RFC9068].  If the
-   Agent is acting on-behalf of another user or system, it MUST include
-   the user or system identifier in the 'sub' claim as defined in
-   Section 2.2 of [RFC9068].  These identitifiers MUST be used by
+   the 'client_id' claim as defined in Section 2.2 of [RFC9068].
+
+   If the Agent is acting on-behalf of another user or system, it MUST
+   include the user or system identifier in the 'sub' claim as defined
+   in Section 2.2 of [RFC9068].  These identitifiers MUST be used by
    resource servers protected by the OAuth 2.0 authorization service,
    along with other claims in the access token, to determine if access
    to a resource should be allowed.  The acccess token MAY include
@@ -550,8 +551,9 @@ Table of Contents
 
 10.3.1.  User Delegates Authorization
 
-   When obtaining an access token on-behalf of a user, the Authorization
-   Code Grant MUST be used as described in Section 4.1 of [RFC6749].
+   When a User grants authorization to an Agent to access one or more
+   resources (Tools, LLMs), the Authorization Code Grant MUST be used as
+   described in Section 4.1 of [RFC6749].
 
 10.3.2.  Agent Obtains Own Authorization
 
@@ -569,7 +571,7 @@ Table of Contents
    Agent), the System SHOULD treat the Agent as an OAuth protected
    resource.  The System SHOULD obtain an access token using the same
    mechanisms defined for an Agent and then present the OAuth access
-   token to the Agent.  The agent should validate the access token,
+   token to the Agent.  The Agent should validate the access token,
    including verifiying that the 'aud' claim of the access token
    includes the Agent.  Once validated, the Agent SHOULD use OAuth 2.0
    Token Exchange as defined in [RFC8693] to exchange the access token
@@ -696,7 +698,7 @@ Table of Contents
 
 10.8.  OAuth 2.0 Discovery in Dynamic Environments
 
-   In dynamic agent deployments (e.g., ephemeral workloads, multi-tenant
+   In dynamic Agent deployments (e.g., ephemeral workloads, multi-tenant
    services, and frequently changing endpoint topology), Agents and
    other participants MAY use OAuth discovery mechanisms to reduce
    static configuration and to bind runtime decisions to verifiable
@@ -826,7 +828,7 @@ Table of Contents
 
 17.  Agent Authorization - Next Level Detail
 
-   During agent execution, authorization must be enforced at all the
+   During Agent execution, authorization must be enforced at all the
    components involved in the process to provide an in-depth protection
    of the resources that might be interacted with.  For each component,
    we must consider the following 3 phases: - Negotiation between the
@@ -875,14 +877,14 @@ Table of Contents
                  +---------------+
 
       Key point - OAuth is broadly supported and provides a delegation
-      model for users to clients (aka agents).  Agents can obtain access
+      model for users to clients (aka Agents).  Agents can obtain access
       tokens directly (client credentials flow, using above
       authentication methods) or it can be delegated to them by a user
       (OAuth flows).  Make point that the access token includes the
       client_id, which is the same as the Agent ID (ore related to it)
       and can be used for authorization decisions, along with other
       claims in an Access Token (reference JWT Access token spec).  Make
-      provision for opaque tokens as well.  Discuss Downscoping of agent
+      provision for opaque tokens as well.  Discuss Downscoping of Agent
       authorization using transaction tokens.  Discuss cross-domain
       authorization (use cases) and how it may be achieved (identity
       chaining and cross-domain authorization).  Discuss human in the
@@ -1110,11 +1112,11 @@ Table of Contents
 17.3.1.  Human-in-the loop
 
    Agent framework problem -> human in the loop - confirm something that
-   it can already do - agent framework capability - confirmation.  Risk
+   it can already do - Agent framework capability - confirmation.  Risk
    management flow.  Human in the loop - request esalated privelages.
    Step-up authorization - refernece the draft (maybe)
 
-   MCP Elicitation to agent to perform some browser things - start authz
+   MCP Elicitation to Agent to perform some browser things - start authz
    code grant flow.  CIBA
 
 17.4.  Case of Multi-Domain Authorization
