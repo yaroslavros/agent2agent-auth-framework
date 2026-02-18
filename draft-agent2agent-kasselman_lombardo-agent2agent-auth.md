@@ -348,7 +348,7 @@ If the Agent is acting on-behalf of another user or system, it MUST include the 
 Agents MUST obtain OAuth 2.0 accss tokens using standards OAuth 2.0 Authorization Flows.
 
 ### User Delegates Authorization
-When a User grants authorization to an Agent, the Authorization Code Grant MUST be used as described in Section 4.1 of {{RFC6749}}.
+When a User grants authorization to an Agent to access one or more resources (Tools, LLMs), the Authorization Code Grant MUST be used as described in Section 4.1 of {{RFC6749}}.
 
 ### Agent Obtains Own Authorization {#agent_obtains_own_access_token}
 Agents obtaining access tokens on their own behalf MUST use the Client Credentials Grant as described in Section 4.4 of {{RFC6749}} or the JWT Authorization Grant as described in section 2.1. of {{OAuth.Private.JWT.Auth-RFC7523}}. When using the Client Credentials Grant, the Agent MUST authenticate itself using one of the mechanisms described in {{agent_authentication}} and MUST NOT use static, long lived client secrets to authenticate.
