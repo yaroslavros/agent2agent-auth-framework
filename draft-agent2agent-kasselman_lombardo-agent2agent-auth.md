@@ -110,6 +110,9 @@ normative:
   RFC9701:
     title: JWT Response for OAuth 2.0 Token Introspection
     target: https://datatracker.ietf.org/doc/rfc9701
+  RFC8414:
+    title: OAuth 2.0 Authorization Server Metadata
+    target: https://datatracker.ietf.org/doc/html/rfc8414
   RFC8693:
     title: OAuth 2.0 Token Exchange
     target: https://datatracker.ietf.org/doc/rfc8693
@@ -142,6 +145,9 @@ normative:
       role: editor
       org: SGNL
     date: 2026
+  OpenIDConnect.Discovery:
+    title: OpenID Connect Discovery 1.0
+    target: https://openid.net/specs/openid-connect-discovery-1_0-final.html
   OpenIDConnect.CIBA:
     title: OpenID Connect Client-Initiated Backchannel Authentication Flow - Core 1.0
     target: https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html
@@ -299,7 +305,7 @@ Although the draft currently defines detailed usage for HTTP (via a Workload-Pro
 ###  HTTP Message Signatures (HTTP Sig)
 The WIMSE Workload-to-Workload Authentication with HTTP Signatures specification {{WIMSE_HTTPSIG}} defines an application-layer authentication profile built on the HTTP Message Signatures standard {{RFC9421}}. It is one of the mechanisms WIMSE defines for authenticating workloads in HTTP-based interactions where transport-layer protections may be insufficient or unavailable. The protocol combines a workload’s Workload Identity Token (WIT), which conveys attested identity and binds a public key, with HTTP Message Signatures using the corresponding private key, thereby providing proof of possession and message integrity for individual HTTP requests and responses. This approach ensures end-to-end authentication and integrity even when traffic traverses intermediaries such as TLS proxies or load balancers that break transport-layer identity continuity. The profile mandates signing of key request components (e.g., method, target, content digest, and the WIT itself) and supports optional response signing to ensure full protection of workload-to-workload exchanges.
 
-# Agent Authorization {#agent_authorization}}
+# Agent Authorization {#agent_authorization}
 Agents act on behalf of a user, a system, or on their own behalf as shown in Figure 1 and needs to obtain authorization when interacting with protected resources.
 
 ## Leverage OAuth 2.0 as a Delegation Authorization Framework
@@ -353,7 +359,7 @@ Access from the Tools to the resources and services MAY be controlled through a 
 In dynamic agent deployments (e.g., ephemeral workloads, multi-tenant services, and frequently changing endpoint topology), Agents and other participants MAY use OAuth discovery mechanisms to reduce static configuration and to bind runtime decisions to verifiable metadata.
 
 ### Authorization Server Capability Discovery
-An Agent that needs to obtain tokens MAY discover authorization server endpoints and capabilities using OAuth 2.0 Authorization Server Metadata {{RFC8414}} and/or OpenID Connect Discovery (when OIDC is in use). This allows the Agent to learn the as issuer identifier, authorization and token endpoints, supported grant types, client authentication methods, signing keys (via jwks_uri), and other relevant capabilities without preconfiguring them.
+An Agent that needs to obtain tokens MAY discover authorization server endpoints and capabilities using OAuth 2.0 Authorization Server Metadata {{RFC8414}} and/or OpenID Connect Discovery {{OpenIDConnect.Discovery}}. This allows the Agent to learn the as issuer identifier, authorization and token endpoints, supported grant types, client authentication methods, signing keys (via jwks_uri), and other relevant capabilities without preconfiguring them.
 
 ### Protected Resource Capability Discovery
 When an Agent is invoking a Tool, the Agent MAY use OAuth 2.0 Protected Resource Metadata {{RFC9728}} to discover how the resource is protected, including the resource identifier and the applicable Authorization Server(s) that protects Tool access. This enables an Agent to select the correct issuer/audience and token acquisition flow at runtime, even when resources are deployed or moved dynamically.
