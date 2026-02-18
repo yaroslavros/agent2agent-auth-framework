@@ -109,21 +109,22 @@ Table of Contents
    14. Security Considerations
    15. Privacy Considerations
    16. IANA Considerations
-     16.1.  System to AI Agent
-       16.1.1.  Flow
-       16.1.2.  (B) Initial Authorization
-       16.1.3.  (C) Access to the AI Agent
-       16.1.4.  (D) Controlling access to the AI Agent
-     16.2.  AI Agent To Other Agent / Tools
-       16.2.1.  (E) Negotiation
-       16.2.2.  (F) AI Agent Authorization
-       16.2.3.  Security
-     16.3.  Agent-to-Resource Authorization
-       16.3.1.  Human-in-the loop
-     16.4.  Case of Multi-Domain Authorization
-       16.4.1.  Cross Domain Agent-to-Agent Authorization
-     16.5.  Agent to Agent Authorization
-   17. Normative References
+   17. Agent Authorization - Next Level Detail
+     17.1.  System to AI Agent
+       17.1.1.  Flow
+       17.1.2.  (B) Initial Authorization
+       17.1.3.  (C) Access to the AI Agent
+       17.1.4.  (D) Controlling access to the AI Agent
+     17.2.  AI Agent To Other Agent / Tools
+       17.2.1.  (E) Negotiation
+       17.2.2.  (F) AI Agent Authorization
+       17.2.3.  Security
+     17.3.  Agent-to-Resource Authorization
+       17.3.1.  Human-in-the loop
+     17.4.  Case of Multi-Domain Authorization
+       17.4.1.  Cross Domain Agent-to-Agent Authorization
+     17.5.  Agent to Agent Authorization
+   18. Normative References
    Acknowledgments
    Authors' Addresses
 
@@ -797,6 +798,8 @@ Figure 1: AI Agent as a Workload
    -----------------------Early Thoughts on Detailed Spec
    Below------------------------------
 
+17.  Agent Authorization - Next Level Detail
+
    During agent execution, authorization must be enforced at all the
    components involved in the process to provide an in-depth protection
    of the resources that might be interacted with.  For each component,
@@ -861,11 +864,11 @@ Figure 1: AI Agent as a Workload
       examples of consent phishing attacks.  Talk about CIBA as a
       protocol.
 
-16.1.  System to AI Agent
+17.1.  System to AI Agent
 
    ### (A) Negotiation - OPTIONAL
 
-16.1.1.  Flow
+17.1.1.  Flow
 
    Following [RFC9728], the System MUST act as an OAuth2 client.  It
    MUST interact with the AI Agent on its metadata endpoint which MUST
@@ -876,18 +879,18 @@ Figure 1: AI Agent as a Workload
    values MAY be required to access this AI Agent; and if extension
    mechanisms MAY be required to fulfil.
 
-16.1.1.1.  Security
+17.1.1.1.  Security
 
    The System MUST follow the best current practices described in
    [RFC9700].
 
-16.1.2.  (B) Initial Authorization
+17.1.2.  (B) Initial Authorization
 
    Based on the information collected as part of (A) or based on its
    configuration, the System MUST initiate an authorization request to
    the Authorization Server acting as authority for the AI Agent.
 
-16.1.2.1.  Flow
+17.1.2.1.  Flow
 
    For this, the System MUST use one of the grant types described in
    [RFC6749] as follows:
@@ -910,7 +913,7 @@ Figure 1: AI Agent as a Workload
          flow), the System MUST use Client-Initiated Backchannel
          Authentication [OpenIDConnect.CIBA].
 
-16.1.2.2.  Extensions
+17.1.2.2.  Extensions
 
    As part of the grant flow, the User / System MUST also fulfill all
    the expected extensions it has an understanding of.  For example, not
@@ -918,7 +921,7 @@ Figure 1: AI Agent as a Workload
    defined in [RFC9449] or {#wpt} - Requesting additional authorization
    details as defined in [RFC9396] or [RFC9126]
 
-16.1.2.3.  Identification
+17.1.2.3.  Identification
 
    The System MUST act as an OAuth2 Client which MAY be assigned a WIMSE
    identifier, which MAY be a SPIFFE ID.
@@ -931,22 +934,22 @@ Figure 1: AI Agent as a Workload
    information provided as part of the mutual TLS OAuth client
    credential as defined in [OAuth.mTLS.Auth-RFC8705]
 
-16.1.2.4.  Authentication
+17.1.2.4.  Authentication
 
    The System MUST authentication using either: - Private Key JWT OAuth
    client authentication as defined in [OAuth.Private.JWT.Auth-RFC7523]
    - Mutual TLS OAuth client authentication as defined in
    [OAuth.mTLS.Auth-RFC8705]
 
-16.1.2.5.  Security
+17.1.2.5.  Security
 
    The System MUST follow the best current practices described in
    [RFC9700] for the interactions with the AI Agent and [RFC8725] when
    handling JWTs.
 
-16.1.3.  (C) Access to the AI Agent
+17.1.3.  (C) Access to the AI Agent
 
-16.1.3.1.  Flow
+17.1.3.1.  Flow
 
    To access an AI Agent, the System MUST present its authorization
    credential as defined in section 7 of [RFC6749] as well as defined in
@@ -957,14 +960,14 @@ Figure 1: AI Agent as a Workload
    new authorization credentials using [OAuth.step-up.Auth-RFC9470] or
    error codes as defined in [RFC6750].
 
-16.1.3.2.  Security
+17.1.3.2.  Security
 
    The client MUST follow the best current practices described in
    [RFC9700].
 
-16.1.4.  (D) Controlling access to the AI Agent
+17.1.4.  (D) Controlling access to the AI Agent
 
-16.1.4.1.  Flow
+17.1.4.1.  Flow
 
    The AI Agent MUST validate the presented token as described in
    [RFC6749] as well as defined in [RFC6750].
@@ -980,11 +983,11 @@ Figure 1: AI Agent as a Workload
    decision point, it MUST follow [OpenIDConnect.AuthZEN] specification
    for requesting and receiving a decision for the access.
 
-16.1.4.2.  Security
+17.1.4.2.  Security
 
    TODO
 
-16.2.  AI Agent To Other Agent / Tools
+17.2.  AI Agent To Other Agent / Tools
 
    Interactions between an AI Agent and Tools are globally specified by
    [MCP].  Those sections only focus on the Identification,
@@ -997,9 +1000,9 @@ Figure 1: AI Agent as a Workload
    focus on the Identification, authentication, and authorization
    aspects of those specifications.
 
-16.2.1.  (E) Negotiation
+17.2.1.  (E) Negotiation
 
-16.2.1.1.  Case of a Tool
+17.2.1.1.  Case of a Tool
 
    Following [MCP], the AI Agent MUST interact with Tools on the
    metadata endpoint of an OAuth 2.0 protected resource to understand
@@ -1008,7 +1011,7 @@ Figure 1: AI Agent as a Workload
    resources; and if proof of possession needs to be presented as
    standardized with [RFC9449].
 
-16.2.1.2.  Case of an Agent
+17.2.1.2.  Case of an Agent
 
    Following [A2A], the AI Agent MUST interact with the other Agent
    through their Agent Card.  If Extended Agent Card is implemented, the
@@ -1021,7 +1024,7 @@ Figure 1: AI Agent as a Workload
    [ACP] and [AP2] Agents are expected to follow the same Agent Card
    feature as [A2A] Agents.
 
-16.2.2.  (F) AI Agent Authorization
+17.2.2.  (F) AI Agent Authorization
 
    Based on the information collected as part of (E), the AI Agent is
    initiating an authorization request with the Authorization Server
@@ -1065,20 +1068,20 @@ Figure 1: AI Agent as a Workload
 
       Transaction Tokens
 
-16.2.3.  Security
+17.2.3.  Security
 
    If the metadata documents are cryptographically signed, the AI Agent
    MUST validate the signature before using the information for any
    authentication and authorization decision.
 
-16.3.  Agent-to-Resource Authorization
+17.3.  Agent-to-Resource Authorization
 
    Present token, peform additional authorization (RBAC etc?)  Direct or
    via tools Resources, services.
 
    Agent -> Tool -> Service -> Resource
 
-16.3.1.  Human-in-the loop
+17.3.1.  Human-in-the loop
 
    Agent framework problem -> human in the loop - confirm something that
    it can already do - agent framework capability - confirmation.  Risk
@@ -1088,15 +1091,15 @@ Figure 1: AI Agent as a Workload
    MCP Elicitation to agent to perform some browser things - start authz
    code grant flow.  CIBA
 
-16.4.  Case of Multi-Domain Authorization
+17.4.  Case of Multi-Domain Authorization
 
-16.4.1.  Cross Domain Agent-to-Agent Authorization
+17.4.1.  Cross Domain Agent-to-Agent Authorization
 
    Identiyt chaining, ID-Jag.
 
-16.5.  Agent to Agent Authorization
+17.5.  Agent to Agent Authorization
 
-17.  Normative References
+18.  Normative References
 
    [A2A]      "Agent2Agent (A2A) Protocol", n.d.,
               <https://github.com/a2aproject/A2A>.
