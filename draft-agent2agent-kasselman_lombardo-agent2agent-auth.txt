@@ -3,7 +3,7 @@
 
 
 Network Working Group                                       P. Kasselman
-Internet-Draft                                                   DeFakto
+Internet-Draft                                          Defakto Security
 Intended status: Informational                               J. Lombardo
 Expires: 22 August 2026                                              AWS
                                                             Y. Rosomakho
@@ -736,7 +736,7 @@ Table of Contents
    that acts as OAuth clients.  Where supported, they MAY use Client ID
    Metadata Documents [OAuth.CIMD], which allow a client to host its
    metadata at a URL-valued client_id so that the relying party can
-   retrieve client properties (e.g., redirect URIs, software statement /
+   retrieve client properties (e.g., redirect URIs, software statement,
    display information, and other registered client metadata) without
    prior bilateral registration.
 
@@ -1321,7 +1321,7 @@ Acknowledgments
 Authors' Addresses
 
    Pieter Kasselman
-   DeFakto
+   Defakto Security
    Email: pieter@defakto.security
 
 
