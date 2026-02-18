@@ -238,7 +238,7 @@ As shown in Figure 1, the AI Agent is a workload that needs and identifier and c
 This document describes how AI Agents should leverage existing standards defined by SPIFFE {{SPIFFE}}, WIMSE, OAuth and OpenID SSF {{SSF}}.
 
 # Agent Identity Management System
-An Agent Identity Management System ensure that the right Agent has access to the right resources and tools at the right time for the right reason. It consists out of the following components:
+An Agent Identity Management System ensure that the right Agent has access to the right resources and tools at the right time for the right reason. An Agent identity system depends on the following components to achieve its goals:
 
 * **Agent Identifiers:** Unique identifier assigned to every Agent.
 * **Agent Credentials:** Cryptographic binding between the Agent Identifier and attributes of the Agent.
