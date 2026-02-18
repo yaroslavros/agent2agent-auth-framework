@@ -208,20 +208,20 @@ TODO Introduction
 An Agent is a workload that iteratively interacts with a Large Language Model (LLM) and a set of tools that expose interfaces to underlying services and resources until a terminating condition, determined either by the LLM or by the agent’s internal logic, is reached. It may receive input from a user, or act autonomusly. Figure 1 shows a conceptual model of the AI Agent as a workload and illustrates the high-level interaction model between the User or System, the AI Agent, the Large Language Model (LLM) and the Tools through which the underlying Services and Resources are accessed by the Agent.
 
 ~~~ ascii-art
-                    +----------------+
-                    | Large Language |
-                    |   Model (LLM)  |
-                    +----------------+
-                           ▲   |
-                          (2) (3)
-                           |   ▼
-+--------------+       +------------+       +-----------+       +-----------+
-|  User /      |──(1)─►|  AI Agent  |──(4)─►|   Tools   |──(5)─►| Services  |
-|      /       |       | (workload) |       |           |       |   and     |
-|     / System |◄─(8)──|            |◄─(7)──|           |◄─(6)──| Resources |
-+--------------+       +------------+       +-----------+       +-----------+
+                +----------------+
+                | Large Language |
+                |   Model (LLM)  |
+                +----------------+
+                      ▲   |
+                     (2) (3)
+                      |   ▼
++--------+       +------------+       +-----------+       +-----------+
+|  User  |──(1)─►|  AI Agent  |──(4)─►|   Tools   |──(5)─►| Services  |
+|   or   |       | (workload) |       |           |       |   and     |
+| System |◄─(8)──|            |◄─(7)──|           |◄─(6)──| Resources |
++--------+       +------------+       +-----------+       +-----------+
 
-Figure 1: AI Agent as a Workload
+               Figure 1: AI Agent as a Workload
 ~~~
 
 1. Optional: The User or System (e.g. a batch job or another Agent) provides an initial request or instruction to the AI Agent.
@@ -264,9 +264,9 @@ An Agent Identity Management System ensure that the right Agent has access to th
 |              +----------------------------------|              |
 |              |           Credentials            |              |
 |              +----------------------------------|              |
-|              |         Agent Identifier         |              |
+|              |           Identifier             |              |
 +--------------+----------------------------------+--------------+
-Figure 2: Agent Identity Management System
+          Figure 2: Agent Identity Management System
 ~~~
 
 # Agent Identifier {#agent_identifiers}
