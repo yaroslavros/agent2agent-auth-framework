@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-17T02:23:01.263827+00:00",
+  "timestamp": "2026-02-19T02:25:22.937967+00:00",
   "repo": "PieterKas/agent2agent-auth-framework",
   "labels": [
     {
@@ -647,24 +647,26 @@
       "id": "PR_kwDOQP22qc7CibG1",
       "title": "Enhance clarity and structure of agent authentication section",
       "url": "https://github.com/PieterKas/agent2agent-auth-framework/pull/21",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "PieterKas",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "Refactor and clarify sections on agent identification, credentials, attestation, and authentication mechanisms. Improve consistency and readability throughout the document.",
       "createdAt": "2026-02-09T17:48:09Z",
-      "updatedAt": "2026-02-09T18:00:44Z",
+      "updatedAt": "2026-02-18T13:49:00Z",
       "baseRepository": "PieterKas/agent2agent-auth-framework",
       "baseRefName": "main",
-      "baseRefOid": "b36089756f72737af83ab9a42eb921640468cd2f",
+      "baseRefOid": "64938ff6e6a50799e2f723c260c6a60e9369ab6e",
       "headRepository": "PieterKas/agent2agent-auth-framework",
       "headRefName": "PieterKas-patch-2",
-      "headRefOid": "76bb1ae85c5d3ee91505caa8991e067f2c2c9ffa",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "6b68c7ef573c57c9069cd92af6cdd0376a812e7c",
+      "closedAt": "2026-02-18T13:48:59Z",
+      "mergedAt": "2026-02-18T13:48:59Z",
+      "mergedBy": "PieterKas",
+      "mergeCommit": {
+        "oid": "a4e3a67799e0936ceb44f6ee28fe47cac762588a"
+      },
       "comments": [],
       "reviews": []
     },
@@ -673,24 +675,95 @@
       "id": "PR_kwDOQP22qc7CkU1K",
       "title": "AuthZ Introduction section",
       "url": "https://github.com/PieterKas/agent2agent-auth-framework/pull/24",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "PieterKas",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "Added sections on agent authorization and access tokens, detailing OAuth 2.0 mechanisms and token structures.",
       "createdAt": "2026-02-09T20:33:59Z",
-      "updatedAt": "2026-02-16T20:01:50Z",
+      "updatedAt": "2026-02-18T13:26:44Z",
       "baseRepository": "PieterKas/agent2agent-auth-framework",
       "baseRefName": "main",
-      "baseRefOid": "c6a878b16d6112675caf5d268cf6452e9c7d4f67",
+      "baseRefOid": "63265481c253003af3d8b30a76a911013acdf2cc",
       "headRepository": "PieterKas/agent2agent-auth-framework",
       "headRefName": "PieterKas-patch-1",
-      "headRefOid": "b4222afa6c74844d47a144bc1ff116329787eec5",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "e3f695bc4a975d989722b69c50d6f9bdd2965e5d",
+      "closedAt": "2026-02-18T13:26:44Z",
+      "mergedAt": "2026-02-18T13:26:44Z",
+      "mergedBy": "PieterKas",
+      "mergeCommit": {
+        "oid": "1541c6fdb3201197563fb919d9759994e2b94a0f"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOQP22qc7jXkVp",
+          "commit": {
+            "abbreviatedOid": "b4222af"
+          },
+          "author": "PieterKas",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-17T15:21:49Z",
+          "updatedAt": "2026-02-17T15:21:49Z",
+          "comments": [
+            {
+              "originalPosition": 115,
+              "body": "Describe what happens if the agent is invoked by something that does not have a access token (degenerates into case 1 or 2)",
+              "createdAt": "2026-02-17T15:21:49Z",
+              "updatedAt": "2026-02-17T15:21:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOQP22qc7jXm93",
+          "commit": {
+            "abbreviatedOid": "b4222af"
+          },
+          "author": "PieterKas",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-17T15:23:22Z",
+          "updatedAt": "2026-02-17T15:23:22Z",
+          "comments": [
+            {
+              "originalPosition": 106,
+              "body": "Add section on discovery",
+              "createdAt": "2026-02-17T15:23:22Z",
+              "updatedAt": "2026-02-17T15:23:22Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 26,
+      "id": "PR_kwDOQP22qc7EoATf",
+      "title": "Add Agent Identity Management System Diagram",
+      "url": "https://github.com/PieterKas/agent2agent-auth-framework/pull/26",
+      "state": "MERGED",
+      "author": "PieterKas",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-02-18T13:46:06Z",
+      "updatedAt": "2026-02-18T13:46:42Z",
+      "baseRepository": "PieterKas/agent2agent-auth-framework",
+      "baseRefName": "main",
+      "baseRefOid": "984eee7f9492111598ffcc758b71899c85e28a2e",
+      "headRepository": "PieterKas/agent2agent-auth-framework",
+      "headRefName": "PieterKas-patch-3",
+      "headRefOid": "4d1bcf833f5cbc68e366b054377728c976a5caa8",
+      "closedAt": "2026-02-18T13:46:42Z",
+      "mergedAt": "2026-02-18T13:46:42Z",
+      "mergedBy": "PieterKas",
+      "mergeCommit": {
+        "oid": "64938ff6e6a50799e2f723c260c6a60e9369ab6e"
+      },
       "comments": [],
       "reviews": []
     }
