@@ -113,9 +113,6 @@ normative:
   RFC8414:
     title: OAuth 2.0 Authorization Server Metadata
     target: https://datatracker.ietf.org/doc/html/rfc8414
-  RFC8693:
-    title: OAuth 2.0 Token Exchange
-    target: https://datatracker.ietf.org/doc/rfc8693
   RFC9728:
     title: OAuth 2.0 Protected Resource Metadata
     target: https://datatracker.ietf.org/doc/rfc9728/
@@ -151,9 +148,6 @@ normative:
   OpenIDConnect.CIBA:
     title: OpenID Connect Client-Initiated Backchannel Authentication Flow - Core 1.0
     target: https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html
-  OAuth.TRAT:
-    title: Transaction Tokens
-    target: https://datatracker.ietf.org/doc/draft-ietf-oauth-transaction-tokens/
   OAuth.SPIFFE.Client.Auth:
     title: OAuth SPIFFE Client Authentication
     target: https://datatracker.ietf.org/doc/draft-ietf-oauth-spiffe-client-auth
@@ -279,13 +273,17 @@ Since SPIFFE IDs are URI-based workload identifiers and their structure aligns w
 All Agents MUST be assigned a WIMSE identifier, which MAY be a SPIFFE ID.
 
 # Agent Credentials {#agent_credentials}
-Agents MUST have credentials that provide a cryptographic binding to the agent identifier. These credentials are considered primary credentials that are provisioned at runtime. The cryptographic binding is essential for establishing trust since an identifier on its own is insufficient unless it is verifiably tied to a key or token controlled by the agent. WIMSE define a profile of X.509 certificates and Workload Identity Tokens (WITs) {{WIMSE_CRED}}, while SPIFFE defines SPIFFE Verified ID (SVID) profiles of JSON Web Token (JWT-SVID), X.509 certificates (X.509-SVID) and WIMSE Workload Identity Tokens (WIT-SVID). SPIFFE SVID credentials are compatible with WIMSE defined credentials. The choice of an appropriate format depends on the trust model and integration requirements.
+Agents MUST possess credentials that provide a cryptographic binding to the agent identifier. These credentials are considered primary credentials that are provisioned at runtime. An identifier alone is insufficient unless it can be verified to be controlled by the communicating agent through a cryptographic binding.
 
-Agent credentials SHOULD be short-lived to minimize the risk of credential theft and MUST have an explicit expiration time after which it is no longer accepted, and MAY carry additional attributes relevant to the agent (e.g., trust domain, attestation evidence, or workload metadata).
+WIMSE credentials ({{!WIMSE-CRED=I-D.ietf-wimse-workload-creds}}) are defined as a profile of X.509 certificates and Workload Identity Tokens (WITs), while SPIFFE defines SPIFFE Verified ID (SVID) profiles of JSON Web Token (JWT-SVID), X.509 certificates (X.509-SVID) and WIMSE Workload Identity Tokens (WIT-SVID). SPIFFE SVID credentials are compatible with WIMSE defined credentials. The choice of an appropriate format depends on the trust model and integration requirements.
 
-In some cases, agents MAY need a secondary credential to access a proprietary or legacy system that is not compatible with the X.509, JWT or WIT it is provisioned with. In these cases an agent MAY exchange their primary credentials through a credential exchange mechanisms (e.g., OAuth 2.0 Token Exchange, Transaction Tokens, Workload Identity Federation). This allows an agent to obtain a credential targeted to a specific relying party by leveraging the primary credential in its possession.
+Agent credentials SHOULD be short-lived to minimize the risk of credential theft, MUST include an explicit expiration time after which it is no longer accepted, and MAY carry additional attributes relevant to the agent (for example trust domain, attestation evidence, or workload metadata).
 
-Note: Static API keys are an anti-pattern for agent identity. They are bearer artefacts that are not cryptographically bound, don't convey identity, are long lived and are operationally brittle as they are difficult to rotate, making them unsuitable for secure Agent-to-Agent authentication or authorization.
+Deployments can improve the assurance of agent identity by protecting private keys using hardware-backed or isolated cryptographic storage such as TPMs, secure enclaves, or platform security modules when such capabilities are available. These mechanisms reduce key exfiltration risk but are not required for interoperability.
+
+In some cases, agents MAY need a secondary credential to access a proprietary or legacy system that is not compatible with the X.509, JWT or WIT it is provisioned with. In these cases an agent MAY exchange their primary credentials through a credential exchange mechanisms (e.g., OAuth 2.0 Token Exchange {{!OAUTH-TOKEN-EXCHANGE=RFC8693}}, Transaction Tokens {{!OAUTH-TRANS-TOKENS=I-D.ietf-oauth-transaction-tokens}}, SPIFFE Federation {{SPIFFE_FEDERATION}}). This allows an agent to obtain a credential targeted to a specific relying party by leveraging the primary credential in its possession.
+
+Note: Static API keys are an anti-pattern for agent identity. They are bearer artefacts that are not cryptographically bound, do not convey identity, are typically long-lived and are operationally difficult to rotate, making them unsuitable for secure agent authentication or authorization.
 
 # Agent Attestation {#agent_attestation}
 Agent attestation is the identity-proofing mechanism for AI agents. Just as humans rely on identity proofing during account creation or credential issuance, agents require a means to demonstrate what they are, how they were instantiated, and under what conditions they are operating. Attestation evidence feeds into the credential issuance process and determines whether a credential is issued, the type of credential issued and the contents of the credential.
@@ -326,7 +324,7 @@ The WIMSE working group defines the following authentication mechanisms that may
 ### WIMSE Proof Tokens (WPTs) {#wpt}
 WIMSE Workload Proof Tokens (WPTs) are a protocol-independent, application-layer mechanism for proving possession of the private key associated with a Workload Identity Token (WIT). WPTs are generated by the agent, using the private key matching the public key in the WIT. A WPT is defined as a signed JSON Web Token (JWT) that binds an agent’s authentication to a specific message context, for example, an HTTP request, thereby providing proof of possession rather than relying on bearer semantics {{WIMSE_WPT}}.
 
-WPTs are designed to work alongside WITs {{WIMSE_CRED}} and are typically short-lived to reduce the window for replay attacks.  They carry claims such as audience (aud), expiration (exp), a unique token identifier (jti), and a hash of the associated WIT (wth). A WPT may also include hashes of other related tokens (e.g., OAuth access tokens) to bind the authentication contexts to specific transaction or authorizations details.
+WPTs are designed to work alongside WITs {{WIMSE-CRED}} and are typically short-lived to reduce the window for replay attacks.  They carry claims such as audience (aud), expiration (exp), a unique token identifier (jti), and a hash of the associated WIT (wth). A WPT may also include hashes of other related tokens (e.g., OAuth access tokens) to bind the authentication contexts to specific transaction or authorizations details.
 
 Although the draft currently defines a protocol binding for HTTP (via a Workload-Proof-Token header), the core format is protocol-agnostic, making it applicable to other protocols. Its JWT structure and claims model allow WPTs to be bound to different protocols and transports, including asynchronous or non-HTTP messaging systems such as Kafka and gRPC, or other future protocol bindings. This design enables relying parties to verify identity, key possession, and message binding at the application layer even in environments where transport-layer identity (e.g., mutual TLS) is insufficient or unavailable.
 
@@ -354,7 +352,7 @@ When a User grants authorization to an Agent to access one or more resources (To
 Agents obtaining access tokens on their own behalf MUST use the Client Credentials Grant as described in Section 4.4 of {{RFC6749}} or the JWT Authorization Grant as described in section 2.1. of {{OAuth.Private.JWT.Auth-RFC7523}}. When using the Client Credentials Grant, the Agent MUST authenticate itself using one of the mechanisms described in {{agent_authentication}} and MUST NOT use static, long lived client secrets to authenticate.
 
 ### System Access to Agents
-When Agents are invoked by a System (e.g. a batcch job, or another Agent), the System SHOULD treat the Agent as an OAuth protected resource. The System SHOULD obtain an access token using the same mechanisms defined for an Agent and then present the OAuth access token to the Agent. The Agent should validate the access token, including verifiying that the 'aud' claim of the access token includes the Agent. Once validated, the Agent SHOULD use OAuth 2.0 Token Exchange as defined in {{RFC8693}} to exchange the access token it received for a new access token to access. The Agent then uses the newly issued access token to access the protected resources (LLM or Tools) it needs to complete the request.
+When Agents are invoked by a System (e.g. a batcch job, or another Agent), the System SHOULD treat the Agent as an OAuth protected resource. The System SHOULD obtain an access token using the same mechanisms defined for an Agent and then present the OAuth access token to the Agent. The Agent should validate the access token, including verifiying that the 'aud' claim of the access token includes the Agent. Once validated, the Agent SHOULD use OAuth 2.0 Token Exchange as defined in {{OAUTH-TOKEN-EXCHANGE}} to exchange the access token it received for a new access token to access. The Agent then uses the newly issued access token to access the protected resources (LLM or Tools) it needs to complete the request.
 
 If a System invokes an Agent and does not treat the Agent as an OAuth protected resource, the Agent MUST obtain its own OAuth access token as described in {#agent_obtains_own_access_token}.
 
@@ -364,9 +362,9 @@ Agents MUST support the Best Current Practice for OAuth 2.0 Security as describe
 ## Risk reduction with Transaction Tokens {#trat-risk-reduction}
 Resources servers, whether they are LLMs, Tools or Agents (in the Agent-to-Agent case) may be composed of multiple microservices that are invoked to complete a request. The access tokens presented to the Agent, LLM or Tools can typically be used with multiple transactions and consequently have broader scope than needed to complete any specific transaction. Passing the access token from one microservice to another within an Agent, LLM or the Tools invoked by the Agent increases the risk of token theft and replay attaccks. For example, an attacker may discover and access token passed between microservices in a log file or crash dump, exfiltrate it, and use it to invoke a new transaction with different parameters (e.g. increase the trnasaction amount, or invoke an unrelated call as part of executing a lateral move).
 
-To avoid passing access tokens between microservices, the Agent, LLM or Tools SHOULD exchange the access token it receives for a transaction token, as defined in the Transaction Token specification as defined in {{OAuth.TRAT}}. The transaction token allows for identity and auhtorization information to be passed along a call chain between microservices. The transaction token issuer enriches the transaction token with context of the caller that presented the access token (e.g. IP address etc), transaction context (transaction amount), identity information and a unique transaction identifier. This results in a dowscoped token that is bound to a specific transaction that cannot be used as an access token, with another transaction, or within the same transaction with modified transaction details (e.g. change in transaction amount). Transaction tokens are typically short lived, further lmiting the risk in case they are obtained by an attacker by liomiting the time window during which these tokens will be accepted.
+To avoid passing access tokens between microservices, the Agent, LLM or Tools SHOULD exchange the access token it receives for a transaction token, as defined in the Transaction Token specification as defined in {{OAUTH-TRANS-TOKENS}}. The transaction token allows for identity and auhtorization information to be passed along a call chain between microservices. The transaction token issuer enriches the transaction token with context of the caller that presented the access token (e.g. IP address etc), transaction context (transaction amount), identity information and a unique transaction identifier. This results in a dowscoped token that is bound to a specific transaction that cannot be used as an access token, with another transaction, or within the same transaction with modified transaction details (e.g. change in transaction amount). Transaction tokens are typically short lived, further lmiting the risk in case they are obtained by an attacker by liomiting the time window during which these tokens will be accepted.
 
-A transaction token MAY be used to obtain an access token to call another service (e.g. another Agent, Tool or LLM) by using OAuth 2.0 Token Exchange as defined in {{RFC8693}}.
+A transaction token MAY be used to obtain an access token to call another service (e.g. another Agent, Tool or LLM) by using OAuth 2.0 Token Exchange as defined in {{OAUTH-TOKEN-EXCHANGE}}.
 
 ## Cross Domain Access
 Agents often require access to resources that are protected by different OAuth 2.0 authorization servers. When the components in Figure 1 are protected by different logical authorization servers, an Agent SHOULD use OAuth Identity and Authorization Chaining Across Domains as defined in {{OAuth.IDChaining}}, or a derived specification such as the Identity Assertion JWT Authorization Grant {{OAuth.IDJAG}}, to obtain an access token from the relevant authorization servers.
@@ -383,7 +381,7 @@ An OAuth authorization server MAY conclude that the level of access to a resourc
 ## Tool-to-Service Acccess
 Tools expose interfaces to underlying services and resources. Access to the Tools SHOULD be controlled by OAuth which MAY be augmented by policy, attribute or role based authorization systems (amongst others). If the Tools are implemented as one or more microservices, it should use transaction tokens to reduce risk as described in {{trat-risk-reduction}} to avoid passing access tokens around within the Tool implementation.
 
-Access from the Tools to the resources and services MAY be controlled through a variety of auhtorization mechanisms, includidng OAuth. If access is controlled through OAuth, the Tools SHOULD use OAuth 2.0 Token Exchange as defined in {{RFC8693}} to exchange the access token it received for a new access token to access the resource or service in question. If the Tool needs acces to a resource protected by an auhtorization server other than the Tool's own authorization server, it SHOULD use the OAuth Identity and Authorization Chaining Across Domains ({{OAuth.IDChaining}}) to obtain an access token from the authroization server protecting the resource it needs to access.
+Access from the Tools to the resources and services MAY be controlled through a variety of auhtorization mechanisms, includidng OAuth. If access is controlled through OAuth, the Tools SHOULD use OAuth 2.0 Token Exchange as defined in {{OAUTH-TOKEN-EXCHANGE}} to exchange the access token it received for a new access token to access the resource or service in question. If the Tool needs acces to a resource protected by an auhtorization server other than the Tool's own authorization server, it SHOULD use the OAuth Identity and Authorization Chaining Across Domains ({{OAuth.IDChaining}}) to obtain an access token from the authroization server protecting the resource it needs to access.
 
 ## OAuth 2.0 Discovery in Dynamic Environments
 In dynamic Agent deployments (e.g., ephemeral workloads, multi-tenant services, and frequently changing endpoint topology), Agents and other participants MAY use OAuth discovery mechanisms to reduce static configuration and to bind runtime decisions to verifiable metadata.
@@ -445,7 +443,7 @@ During Agent execution, authorization must be enforced at all the components inv
 Those phases rely on the following standards for enforcement of the access control:
 - {{RFC6749}} is an established and maintained framework of specifications for requesting, acquiring, and proving ownership of pieces of authorization in the form of bearer tokens.
 - {{OpenIDConnect.AuthZEN}} is a new specification for exchanging authorization requests and decisions between the layer acting at the Policy Enforcement Point (PEP) and a Policy Decision Point (PDP).
-- {{OAuth.TRAT}} is new specification for formatting pieces of authorization in the form of transaction bound bearer tokens.
+- {{OAUTH-TRANS-TOKENS}} is new specification for formatting pieces of authorization in the form of transaction bound bearer tokens.
 
 ~~~ ascii-art
                        +----------------+
@@ -585,11 +583,11 @@ Such authorization request can allow to down, change or translate scope; enrich 
 
 - If the AI Agent acts on its behalf as a system:
   - If it does not want or need to refer to the previous context, it MUST start a client credential grant flow as described in section 1.3.4 of {{RFC6749}};
-  - If it does want or need to refer to the previous context, it MUST start a token exchange flow as described in {{RFC8693}}. The AI Agent will be able to decide in between obtaining tokens representing a Delegation or an Impersonation as described in section 1.1 of the specification.
+  - If it does want or need to refer to the previous context, it MUST start a token exchange flow as described in {{OAUTH-TOKEN-EXCHANGE}}. The AI Agent will be able to decide in between obtaining tokens representing a Delegation or an Impersonation as described in section 1.1 of the specification.
 - If the AI Agent acts on delegation by a user:
   - If the AI Agent can interact and want to interact with the user through the client, it MUST start an authorization code grant flow as described in section 1.3.1 of {{RFC6749}};
   - If the AI Agent cannot or does not want to interact with the user through the client, it MAY:
-    - Start a token exchange flow as described in {{RFC8693}}. The AI Agent will be able to decide in between obtaining tokens representing a Delegation or an Impersonation as described in section 1.1 of the specification.
+    - Start a token exchange flow as described in {{OAUTH-TOKEN-EXCHANGE}}. The AI Agent will be able to decide in between obtaining tokens representing a Delegation or an Impersonation as described in section 1.1 of the specification.
     - Start a client initated backchannel authorized request as described in {{OpenIDConnect.CIBA}}
 
 If the AI Agent knows that the underlying actions
