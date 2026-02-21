@@ -77,54 +77,27 @@ normative:
   RFC9421:
     title: HTTP Message Signatures
     target: https://datatracker.ietf.org/doc/rfc9421
-  RFC6749:
-    title: The OAuth 2.0 Authorization Framework
-    target: https://datatracker.ietf.org/doc/rfc6749
   RFC9449:
     title: OAuth 2.0 Demonstrating Proof of Possession (DPoP)
     target: https://datatracker.ietf.org/doc/rfc9449
-  RFC9700:
-    title: Best Current Practice for OAuth 2.0 Security
-    target: https://datatracker.ietf.org/doc/rfc9700
   RFC9396:
     title: OAuth 2.0 Rich Authorization Requests
     target: https://datatracker.ietf.org/doc/rfc9396
   RFC9126:
     title: OAuth 2.0 Pushed Authorization Requests
     target: https://datatracker.ietf.org/doc/rfc9126
-  RFC9068:
-    title: JSON Web Token (JWT) Profile for OAuth 2.0 Access Tokens
-    target: https://datatracker.ietf.org/doc/rfc9068
   RFC8725:
     title: JSON Web Token Best Current Practices
     target: https://datatracker.ietf.org/doc/rfc8725
   RFC6750:
     title: "The OAuth 2.0 Authorization Framework: Bearer Token Usage"
     target: https://datatracker.ietf.org/doc/rfc6750
-  RFC7591:
-    title: "OAuth 2.0 Dynamic Client Registration Protocol"
-    target: https://datatracker.ietf.org/doc/html/rfc7591
-  RFC7662:
-    title: OAuth 2.0 Token Introspection
-    target: https://datatracker.ietf.org/doc/rfc7662
   RFC9701:
     title: JWT Response for OAuth 2.0 Token Introspection
     target: https://datatracker.ietf.org/doc/rfc9701
-  RFC8414:
-    title: OAuth 2.0 Authorization Server Metadata
-    target: https://datatracker.ietf.org/doc/html/rfc8414
-  RFC8693:
-    title: OAuth 2.0 Token Exchange
-    target: https://datatracker.ietf.org/doc/rfc8693
-  RFC9728:
-    title: OAuth 2.0 Protected Resource Metadata
-    target: https://datatracker.ietf.org/doc/rfc9728/
   RFC8628:
     title: OAuth 2.0 Device Authorization Grant
     target: https://www.rfc-editor.org/rfc/rfc8628.html
-  OAuth.Private.JWT.Auth-RFC7523:
-    title: JSON Web Token (JWT) Profile for OAuth 2.0 Client Authentication and Authorization Grants
-    target: https://datatracker.ietf.org/doc/html/rfc7523
   OAuth.mTLS.Auth-RFC8705:
     title: OAuth 2.0 Mutual-TLS Client Authentication and Certificate-Bound Access Tokens
     target: https://datatracker.ietf.org/doc/html/rfc8705
@@ -157,15 +130,6 @@ normative:
   OAuth.SPIFFE.Client.Auth:
     title: OAuth SPIFFE Client Authentication
     target: https://datatracker.ietf.org/doc/draft-ietf-oauth-spiffe-client-auth
-  OAuth.CIMD:
-    title: OAuth Client ID Metadata Document
-    target: https://datatracker.ietf.org/doc/draft-ietf-oauth-client-id-metadata-document
-  OAuth.IDJAG:
-    title: Identity Assertion JWT Authorization Grant
-    target: https://datatracker.ietf.org/doc/draft-ietf-oauth-identity-assertion-authz-grant/01/
-  OAuth.IDChaining:
-    title: OAuth Identity and Authorization Chaining Across Domains
-    target: https://datatracker.ietf.org/doc/draft-ietf-oauth-identity-chaining/
   MCP:
     title: Model Context Protocol
     target: https://modelcontextprotocol.io/specification
@@ -337,69 +301,82 @@ The WIMSE Workload-to-Workload Authentication with HTTP Signatures specification
 Agents act on behalf of a user, a system, or on their own behalf as shown in Figure 1 and needs to obtain authorization when interacting with protected resources.
 
 ## Leverage OAuth 2.0 as a Delegation Authorization Framework
-The OAuth 2.0 Authorization Framework {{RFC6749}} is widely deployed and defines an authorization delegation framework that enables an Agent to obtain limited access to a protected resource (e.g. a service or API) under well-defined policy constraints. An Agent MUST use OAuth 2.0-based mechanisms to obtain authorization from a user, a system, or on its own behalf. OAuth 2.0 defines a wide range of authorization grant flows that supports these scenarios. In these Oauth 2.0 flows, an Agent acts as an OAuth 2.0 Client to an OAuth 2.0 Authorization Server, which receives the request, evaluate the authorization policy and returns an access token, which the Agent presents to the Resource Server (i.e. the protected resources such as the LLM or Tools in Figure 1) it needs to access to complete the request.
+The OAuth 2.0 Authorization Framework {{!OAUTH-FRAMEWORK=RFC6749}} is widely deployed and defines an authorization delegation framework that enables an Agent to obtain limited access to a protected resource (e.g. a service or API) under well-defined policy constraints. An Agent MUST use OAuth 2.0-based mechanisms to obtain authorization from a user, a system, or on its own behalf. OAuth 2.0 defines a wide range of authorization grant flows that supports these scenarios. In these Oauth 2.0 flows, an Agent acts as an OAuth 2.0 Client to an OAuth 2.0 Authorization Server, which receives the request, evaluate the authorization policy and returns an access token, which the Agent presents to the Resource Server (i.e. the protected resources such as the LLM or Tools in Figure 1) it needs to access to complete the request.
 
 ## Use of OAuth 2.0 Access Tokens
-An OAuth access token represents the authorization granted to the Agent. In many deployments, access tokens are structured as JSON Web Tokens (JWTs) {{RFC9068}}, which include claims such as 'client_id', 'sub', 'aud', 'scope', and other attributes relevant to authorization. The access token MUST include the Agent identity as the 'client_id' claim as defined in Section 2.2 of {{RFC9068}}.
+An OAuth access token represents the authorization granted to the Agent. In many deployments, access tokens are structured as JSON Web Tokens (JWTs) {{!OAUTH-ACCESSTOKEN-JWT=RFC9068}}, which include claims such as 'client_id', 'sub', 'aud', 'scope', and other attributes relevant to authorization. The access token MUST include the Agent identity as the 'client_id' claim as defined in {{Section 2.2 of OAUTH-ACCESSTOKEN-JWT}}.
 
-If the Agent is acting on-behalf of another user or system, it MUST include the user or system identifier in the 'sub' claim as defined in Section 2.2 of {{RFC9068}}. These identitifiers MUST be used by resource servers protected by the OAuth 2.0 authorization service, along with other claims in the access token, to determine if access to a resource should be allowed. The acccess token MAY include additional claims to convey contextual, attestation-derived, or policy-related information that enables fine-grained access control. The resource server MAY use the access token and the information it contains along with other authorization systems (e.g. policy based, attribute based or role based authorization systems) when enforcing access. Where JWT access tokens are not used, opaque tokens may be issued and validated through introspection mechanisms. This framework supports both models and does not require a specific token format, provided that equivalent authorization semantics are maintained.
+If the Agent is acting on-behalf of another user or system, it MUST include the user or system identifier in the 'sub' claim as defined in {{Section 2.2 of OAUTH-ACCESSTOKEN-JWT}}. These identitifiers MUST be used by resource servers protected by the OAuth 2.0 authorization service, along with other claims in the access token, to determine if access to a resource should be allowed. The acccess token MAY include additional claims to convey contextual, attestation-derived, or policy-related information that enables fine-grained access control. The resource server MAY use the access token and the information it contains along with other authorization systems (e.g. policy based, attribute based or role based authorization systems) when enforcing access. Where JWT access tokens are not used, opaque tokens may be issued and validated through introspection mechanisms. This framework supports both models and does not require a specific token format, provided that equivalent authorization semantics are maintained.
+
+When opaque tokens are used, the resource server MUST obtain authorization information through OAuth 2.0 Token Introspection {{!OAUTH-TOKEN-INTROSPECTION=RFC7662}}. The introspection response provides the active state of the token and associated authorization attributes equivalent to those conveyed in structured tokens.
 
 ## Obtaining an OAuth 2.0 Access Token
 Agents MUST obtain OAuth 2.0 accss tokens using standards OAuth 2.0 Authorization Flows.
 
 ### User Delegates Authorization
-When a User grants authorization to an Agent to access one or more resources (Tools, LLMs), the Authorization Code Grant MUST be used as described in Section 4.1 of {{RFC6749}}.
+When a User grants authorization to an Agent to access one or more resources (Tools, LLMs), the Authorization Code Grant MUST be used as described in {{Section 4.1 of OAUTH-FRAMEWORK}}.
 
 ### Agent Obtains Own Authorization {#agent_obtains_own_access_token}
-Agents obtaining access tokens on their own behalf MUST use the Client Credentials Grant as described in Section 4.4 of {{RFC6749}} or the JWT Authorization Grant as described in section 2.1. of {{OAuth.Private.JWT.Auth-RFC7523}}. When using the Client Credentials Grant, the Agent MUST authenticate itself using one of the mechanisms described in {{agent_authentication}} and MUST NOT use static, long lived client secrets to authenticate.
+Agents obtaining access tokens on their own behalf MUST use the Client Credentials Grant as described in {{Section 4.4 of OAUTH-FRAMEWORK}} or the JWT Authorization Grant as described in {{Section 2.1 of !OAUTH-CLIENTAUTH-JWT=RFC7523}}. When using the Client Credentials Grant, the Agent MUST authenticate itself using one of the mechanisms described in {{agent_authentication}} and MUST NOT use static, long lived client secrets to authenticate.
 
 ### System Access to Agents
-When Agents are invoked by a System (e.g. a batcch job, or another Agent), the System SHOULD treat the Agent as an OAuth protected resource. The System SHOULD obtain an access token using the same mechanisms defined for an Agent and then present the OAuth access token to the Agent. The Agent should validate the access token, including verifiying that the 'aud' claim of the access token includes the Agent. Once validated, the Agent SHOULD use OAuth 2.0 Token Exchange as defined in {{RFC8693}} to exchange the access token it received for a new access token to access. The Agent then uses the newly issued access token to access the protected resources (LLM or Tools) it needs to complete the request.
+When Agents are invoked by a System (e.g. a batch job, or another Agent), the System SHOULD treat the Agent as an OAuth protected resource. The System SHOULD obtain an access token using the same mechanisms defined for an Agent and then present the OAuth access token to the Agent. The Agent should validate the access token, including verifiying that the 'aud' claim of the access token includes the Agent. Once validated, the Agent SHOULD use OAuth 2.0 Token Exchange as defined in {{!OAUTH-TOKEN-EXCHANGE=RFC8693}} to exchange the access token it received for a new access token to access. The Agent then uses the newly issued access token to access the protected resources (LLM or Tools) it needs to complete the request.
 
-If a System invokes an Agent and does not treat the Agent as an OAuth protected resource, the Agent MUST obtain its own OAuth access token as described in {#agent_obtains_own_access_token}.
+If a System invokes an Agent and does not treat the Agent as an OAuth protected resource, the Agent MUST obtain its own OAuth access token as described in {{agent_obtains_own_access_token}}.
 
 ### OAuth 2.0 Security Best Practices
-Agents MUST support the Best Current Practice for OAuth 2.0 Security as described in {{RFC9700}} when requesting acccess tokens.
+Agents MUST support the Best Current Practice for OAuth 2.0 Security as described in {{!OAUTH-BCP=RFC9700}} when requesting acccess tokens.
 
 ## Risk reduction with Transaction Tokens {#trat-risk-reduction}
 Resources servers, whether they are LLMs, Tools or Agents (in the Agent-to-Agent case) may be composed of multiple microservices that are invoked to complete a request. The access tokens presented to the Agent, LLM or Tools can typically be used with multiple transactions and consequently have broader scope than needed to complete any specific transaction. Passing the access token from one microservice to another within an Agent, LLM or the Tools invoked by the Agent increases the risk of token theft and replay attaccks. For example, an attacker may discover and access token passed between microservices in a log file or crash dump, exfiltrate it, and use it to invoke a new transaction with different parameters (e.g. increase the trnasaction amount, or invoke an unrelated call as part of executing a lateral move).
 
 To avoid passing access tokens between microservices, the Agent, LLM or Tools SHOULD exchange the access token it receives for a transaction token, as defined in the Transaction Token specification as defined in {{OAuth.TRAT}}. The transaction token allows for identity and auhtorization information to be passed along a call chain between microservices. The transaction token issuer enriches the transaction token with context of the caller that presented the access token (e.g. IP address etc), transaction context (transaction amount), identity information and a unique transaction identifier. This results in a dowscoped token that is bound to a specific transaction that cannot be used as an access token, with another transaction, or within the same transaction with modified transaction details (e.g. change in transaction amount). Transaction tokens are typically short lived, further lmiting the risk in case they are obtained by an attacker by liomiting the time window during which these tokens will be accepted.
 
-A transaction token MAY be used to obtain an access token to call another service (e.g. another Agent, Tool or LLM) by using OAuth 2.0 Token Exchange as defined in {{RFC8693}}.
+A transaction token MAY be used to obtain an access token to call another service (e.g. another Agent, Tool or LLM) by using OAuth 2.0 Token Exchange as defined in {{OAUTH-TOKEN-EXCHANGE}}.
 
 ## Cross Domain Access
-Agents often require access to resources that are protected by different OAuth 2.0 authorization servers. When the components in Figure 1 are protected by different logical authorization servers, an Agent SHOULD use OAuth Identity and Authorization Chaining Across Domains as defined in {{OAuth.IDChaining}}, or a derived specification such as the Identity Assertion JWT Authorization Grant {{OAuth.IDJAG}}, to obtain an access token from the relevant authorization servers.
+Agents often require access to resources that are protected by different OAuth 2.0 authorization servers. When the components in Figure 1 are protected by different logical authorization servers, an Agent SHOULD use OAuth Identity and Authorization Chaining Across Domains as defined in {{!OAUTH-ID-CHAIN=I-D.ietf-oauth-identity-chaining}}, or a derived specification such as the Identity Assertion JWT Authorization Grant {{!OAUTH-JWT-ASSERTION=I-D.ietf-oauth-identity-assertion-authz-grant}}, to obtain an access token from the relevant authorization servers.
 
-When using OAuth Identity and Authorization Chaining Across Domains ({{OAuth.IDChaining}}), an Agent SHOULD use the access token or transaction token it received to obtain a JWT authorization grant as described in section 2.3 of {{OAuth.IDChaining}} and then use the JWT authorization grant it receives to obtain an access token for the resource it is trying to access as defined in section 2.4 of {{OAuth.IDChaining}}.
+When using OAuth Identity and Authorization Chaining Across Domains ({{OAUTH-ID-CHAIN}}), an Agent SHOULD use the access token or transaction token it received to obtain a JWT authorization grant as described in {{Section 2.3 of OAUTH-ID-CHAIN}} and then use the JWT authorization grant it receives to obtain an access token for the resource it is trying to access as defined in {{Section 2.4 of OAUTH-ID-CHAIN}}.
 
-When using the Identity Assertion JWT Authorization Grant {{OAuth.IDJAG}}, the identity assertion (e.g. the OpenID Connect ID Token or SAML assertion) for the target end-user is used to obtain a JWT assertion (ID-JAG) as described in section 4.3 of {{OAuth.IDJAG}}, which is then used to obtain an access token as described in section 4.4 of {{OAuth.IDJAG}}.
+When using the Identity Assertion JWT Authorization Grant {{OAUTH-JWT-ASSERTION}}, the identity assertion (e.g. the OpenID Connect ID Token or SAML assertion) for the target end-user is used to obtain a JWT assertion as described in {{Section 4.3 of OAUTH-JWT-ASSERTION}}, which is then used to obtain an access token as described in {{Section 4.4 of OAUTH-JWT-ASSERTION}}.
 
-OAuth Identity and Authorization Chaining Across Domains ({{OAuth.IDChaining}}) provides a general mechanism for obtaining cross-domain access that can be used whether an identity assertion like a SAML or OpenID Connect token is available or not. The Identity Assertion JWT Authorization Grant {{OAuth.IDJAG}} is optimised for cases where an identity assertion like a SAML or OpenID Connect token is available from an identity provider that is trusted by all the OAuth authorization servers as it removes the need for the user to re-authenticate. This is typically used within enterprise deployments to simplify authorization delegation for multiple software-as-a-service offerings.
+OAuth Identity and Authorization Chaining Across Domains ({{OAUTH-ID-CHAIN}}) provides a general mechanism for obtaining cross-domain access that can be used whether an identity assertion like a SAML or OpenID Connect token is available or not. The Identity Assertion JWT Authorization Grant {{OAUTH-JWT-ASSERTION}} is optimised for cases where an identity assertion like a SAML or OpenID Connect token is available from an identity provider that is trusted by all the OAuth authorization servers as it removes the need for the user to re-authenticate. This is typically used within enterprise deployments to simplify authorization delegation for multiple software-as-a-service offerings.
 
 ## Human in the Loop
-An OAuth authorization server MAY conclude that the level of access to a resource that an Agent, LLM or Tool is requesting requires additional authorization from the User. When it determines that additional authorization is required, it SHOULD either decline the request or request additional authorization from the User by using the OpenID foundation Client Initiated Backchannel Authentication (CIBA). This will trigger a request to the user to grant additional authorization (e.g. through a push notification). Once the user grant authorization, the authorization server issues an access token to the Agent which it may then use to complete the task.
+An OAuth authorization server MAY conclude that the level of access requested by an Agent requires explicit user confirmation. In such cases the authorization server SHOULD either decline the request or obtain additional authorization from the User using the OpenID Client Initiated Backchannel Authentication (CIBA) protocol. This triggers an out-of-band interaction (for example a push notification or authenticator approval) allowing the user to approve or deny the requested operation without exposing credentials to the agent.
+
+Interactive agent frameworks may also solicit user confirmation directly during task execution (for example tool invocation approval or parameter confirmation). Such interactions do not by themselves constitute authorization and MUST be bound to a verifiable authorization grant issued by the authorization server. The agent SHOULD therefore translate user confirmation into an OAuth authorization event (e.g., step-up authorization via CIBA) before accessing protected resources.
+
+This model aligns with user-solicitation patterns such as those described by the Model Context Protocol ({{MCP}}), where an agent pauses execution and requests user confirmation before performing sensitive actions. The final authorization decision remains with the authorization server, and the agent MUST NOT treat local UI confirmation alone as sufficient authorization.
 
 ## Tool-to-Service Acccess
 Tools expose interfaces to underlying services and resources. Access to the Tools SHOULD be controlled by OAuth which MAY be augmented by policy, attribute or role based authorization systems (amongst others). If the Tools are implemented as one or more microservices, it should use transaction tokens to reduce risk as described in {{trat-risk-reduction}} to avoid passing access tokens around within the Tool implementation.
 
-Access from the Tools to the resources and services MAY be controlled through a variety of auhtorization mechanisms, includidng OAuth. If access is controlled through OAuth, the Tools SHOULD use OAuth 2.0 Token Exchange as defined in {{RFC8693}} to exchange the access token it received for a new access token to access the resource or service in question. If the Tool needs acces to a resource protected by an auhtorization server other than the Tool's own authorization server, it SHOULD use the OAuth Identity and Authorization Chaining Across Domains ({{OAuth.IDChaining}}) to obtain an access token from the authroization server protecting the resource it needs to access.
+Access from the Tools to the resources and services MAY be controlled through a variety of auhtorization mechanisms, includidng OAuth. If access is controlled through OAuth, the Tools SHOULD use OAuth 2.0 Token Exchange as defined in {{OAUTH-TOKEN-EXCHANGE}} to exchange the access token it received for a new access token to access the resource or service in question. If the Tool needs acces to a resource protected by an auhtorization server other than the Tool's own authorization server, it SHOULD use the OAuth Identity and Authorization Chaining Across Domains ({{OAUTH-ID-CHAIN}}) to obtain an access token from the authroization server protecting the resource it needs to access.
+
+## Privacy Considerations
+Authorization tokens may contain user identifiers, agent identifiers, audience restrictions, transaction details, and contextual attributes. Deployments SHOULD minimize disclosure of personally identifiable or sensitive information in tokens and prefer audience-restricted and short-lived tokens. Where possible, opaque tokens with introspection SHOULD be preferred when claim minimization is required.
+
+Agents SHOULD request only the minimum scopes and authorization details necessary to complete a task. Resource servers SHOULD avoid logging full tokens and instead log token identifiers or hashes. When authorization context is propagated across services, derived or down-scoped tokens (such as transaction tokens) SHOULD be used to reduce correlation and replay risk.
+
+Implementations MUST ensure that user identity information delegated to agents is not exposed to unrelated services and that cross-domain authorization exchanges only disclose information required for the target authorization decision.
 
 ## OAuth 2.0 Discovery in Dynamic Environments
 In dynamic Agent deployments (e.g., ephemeral workloads, multi-tenant services, and frequently changing endpoint topology), Agents and other participants MAY use OAuth discovery mechanisms to reduce static configuration and to bind runtime decisions to verifiable metadata.
 
 ### Authorization Server Capability Discovery
-An Agent that needs to obtain tokens MAY discover authorization server endpoints and capabilities using OAuth 2.0 Authorization Server Metadata {{RFC8414}} and/or OpenID Connect Discovery {{OpenIDConnect.Discovery}}. This allows the Agent to learn the as issuer identifier, authorization and token endpoints, supported grant types, client authentication methods, signing keys (via jwks_uri), and other relevant capabilities without preconfiguring them.
+An Agent that needs to obtain tokens MAY discover authorization server endpoints and capabilities using OAuth 2.0 Authorization Server Metadata {{!OAUTH-SERVER-METADATA=RFC8414}} and/or OpenID Connect Discovery {{OpenIDConnect.Discovery}}. This allows the Agent to learn the as issuer identifier, authorization and token endpoints, supported grant types, client authentication methods, signing keys (via jwks_uri), and other relevant capabilities without preconfiguring them.
 
 ### Protected Resource Capability Discovery
-When an Agent is invoking a Tool, the Agent MAY use OAuth 2.0 Protected Resource Metadata {{RFC9728}} to discover how the resource is protected, including the resource identifier and the applicable Authorization Server(s) that protects Tool access. This enables an Agent to select the correct issuer/audience and token acquisition flow at runtime, even when resources are deployed or moved dynamically.
+When an Agent is invoking a Tool, the Agent MAY use OAuth 2.0 Protected Resource Metadata {{!OAUTH-RESOURCE-METADATA=RFC9728}} to discover how the resource is protected, including the resource identifier and the applicable Authorization Server(s) that protects Tool access. This enables an Agent to select the correct issuer/audience and token acquisition flow at runtime, even when resources are deployed or moved dynamically.
 
-A Tool that atttempts to acccess and OAuth protected resource MAY use OAuth 2.0 Protected Resource Metadata {{RFC9728}} in a similar way as an Agent. Similarly, a System may use {{RFC9728}} when accessing an Agent.
+A Tool that atttempts to acccess and OAuth protected resource MAY use OAuth 2.0 Protected Resource Metadata {{OAUTH-RESOURCE-METADATA}} in a similar way as an Agent. Similarly, a System may use {{OAUTH-RESOURCE-METADATA}} when accessing an Agent.
 
 ### Client Capability Discovery
-Other actors (e.g., Authorization Servers, registrars, or policy systems) may need to learn about any entities (System, Agent, Tool) that acts as OAuth clients. Where supported, they MAY use Client ID Metadata Documents {{OAuth.CIMD}}, which allow a client to host its metadata at a URL-valued client_id so that the relying party can retrieve client properties (e.g., redirect URIs, software statement, display information, and other registered client metadata) without prior bilateral registration.
+Other actors (e.g., Authorization Servers, registrars, or policy systems) may need to learn about any entities (System, Agent, Tool) that acts as OAuth clients. Where supported, they MAY use Client ID Metadata Documents {{!OAUTH-CLIENT-METADATA=I-D.ietf-oauth-client-id-metadata-document}}, which allow a client to host its metadata at a URL-valued client_id so that the relying party can retrieve client properties (e.g., redirect URIs, software statement, display information, and other registered client metadata) without prior bilateral registration.
 
-As an alternative, entities acting as OAuth clients MAY register their capabilities with authroization servers as defined in the OAuth 2.0 Dynamic Client Registration Protocol {{RFC7591}}.
+As an alternative, entities acting as OAuth clients MAY register their capabilities with authroization servers as defined in the OAuth 2.0 Dynamic Client Registration Protocol {{!OAUTH-REGISTRATION=RFC7591}}.
 
 # Agent Monitoring and Remediation {#agent_monitoring_and_remediation}
 Agents operate in environments where authorization state can change after an access decision is made. Authroization state may change as a result of policy updates, session termination, device posture changes or elevated risk signals. Implementations SHOULD treat authorization as continuously evaluated rather than a one-time check, and SHOULD include monitoring and remediation mechanisms to detect and communicate changes in authorization status at runtime.
@@ -443,7 +420,7 @@ During Agent execution, authorization must be enforced at all the components inv
 - Validation of the piece of authorization in the context of the request by the component
 
 Those phases rely on the following standards for enforcement of the access control:
-- {{RFC6749}} is an established and maintained framework of specifications for requesting, acquiring, and proving ownership of pieces of authorization in the form of bearer tokens.
+- {{OAUTH-FRAMEWORK}} is an established and maintained framework of specifications for requesting, acquiring, and proving ownership of pieces of authorization in the form of bearer tokens.
 - {{OpenIDConnect.AuthZEN}} is a new specification for exchanging authorization requests and decisions between the layer acting at the Policy Enforcement Point (PEP) and a Policy Decision Point (PDP).
 - {{OAuth.TRAT}} is new specification for formatting pieces of authorization in the form of transaction bound bearer tokens.
 
@@ -485,13 +462,13 @@ Those phases rely on the following standards for enforcement of the access contr
 
 #### Flow
 
-Following {{RFC9728}}, the System MUST act as an OAuth2 client. It MUST interact with the AI Agent on its metadata endpoint which MUST be an OAuth 2.0 protected resource as defined by {{RFC9728}}.
+Following {{OAUTH-RESOURCE-METADATA}}, the System MUST act as an OAuth2 client. It MUST interact with the AI Agent on its metadata endpoint which MUST be an OAuth 2.0 protected resource as defined by {{OAUTH-RESOURCE-METADATA}}.
 
 The System will then understand which Authorization Server MUST be the authority this AI Agent; which scopes or authorization details values MAY be required to access this AI Agent; and if extension mechanisms MAY be required to fulfil.
 
 #### Security
 
-The System MUST follow the best current practices described in {{RFC9700}}.
+The System MUST follow the best current practices described in {{OAUTH-BCP}}.
 
 ### (B) Initial Authorization
 
@@ -499,11 +476,11 @@ Based on the information collected as part of (A) or based on its configuration,
 
 #### Flow
 
-For this, the System MUST use one of the grant types described in {{RFC6749}} as follows:
+For this, the System MUST use one of the grant types described in {{OAUTH-FRAMEWORK}} as follows:
 
-- In a case of the System is acting on its behalf, it MUST start a client credential grant flow as described in section 1.3.4 of {{RFC6749}};
+- In a case of the System is acting on its behalf, it MUST start a client credential grant flow as described in {{Section 1.3.4 of OAUTH-FRAMEWORK}};
 - In the case of the System is acting on behalf of a user:
-  - If the System can interact directly with the user (e.g., browser-based), the System MUST use the authorization code grant flow as described in Section 4.1 of {{RFC6749}};
+  - If the System can interact directly with the user (e.g., browser-based), the System MUST use the authorization code grant flow as described in {{Section 4.1 of OAUTH-FRAMEWORK}};
   - If the System has limited input capabilities, but the User is present at the device, the System MUST use the Device Authorization Grant {{RFC8628}};
   - If the User is not present at the consuming device (decoupled flow), the System MUST use Client-Initiated Backchannel Authentication {{OpenIDConnect.CIBA}}.
 
@@ -518,41 +495,41 @@ As part of the grant flow, the User / System MUST also fulfill all the expected 
 The System MUST act as an OAuth2 Client which MAY be assigned a WIMSE identifier, which MAY be a SPIFFE ID.
 
 If so, the System MUST provide a way to resolve one value to the other, either through:
-- A metadata document URL used OAuth2 Client identifier as defined in {{OAuth.CIMD}};
-- Metadata information provided as part of the Private Key JWT OAuth client credential as defined in {{OAuth.Private.JWT.Auth-RFC7523}}
+- A metadata document URL used OAuth2 Client identifier as defined in {{OAUTH-CLIENT-METADATA}};
+- Metadata information provided as part of the Private Key JWT OAuth client credential as defined in {{OAUTH-CLIENTAUTH-JWT}}
 - Public Certificate information provided as part of the mutual TLS OAuth client credential as defined in {{OAuth.mTLS.Auth-RFC8705}}
 
 #### Authentication
 
 The System MUST authentication using either:
-- Private Key JWT OAuth client authentication as defined in {{OAuth.Private.JWT.Auth-RFC7523}}
+- Private Key JWT OAuth client authentication as defined in {{OAUTH-CLIENTAUTH-JWT}}
 - Mutual TLS OAuth client authentication as defined in {{OAuth.mTLS.Auth-RFC8705}}
 
 #### Security
 
-The System MUST follow the best current practices described in {{RFC9700}} for the interactions with the AI Agent and {{RFC8725}} when handling JWTs.
+The System MUST follow the best current practices described in {{OAUTH-BCP}} for the interactions with the AI Agent and {{RFC8725}} when handling JWTs.
 
 ### (C) Access to the AI Agent
 
 #### Flow
 
-To access an AI Agent, the System MUST present its authorization credential as defined in section 7 of {{RFC6749}} as well as defined in {{RFC6750}}. The client MUST be able to process error codes as defined in section 3 of {{RFC6750}}.
+To access an AI Agent, the System MUST present its authorization credential as defined in {{Section 7 of OAUTH-FRAMEWORK}} as well as defined in {{RFC6750}}. The client MUST be able to process error codes as defined in section 3 of {{RFC6750}}.
 
 The AI Agent MAY request additional details to be provided through a new authorization credentials using {{OAuth.step-up.Auth-RFC9470}} or error codes as defined in {{RFC6750}}.
 
 #### Security
 
-The client MUST follow the best current practices described in {{RFC9700}}.
+The client MUST follow the best current practices described in {{OAUTH-BCP}}.
 
 ### (D) Controlling access to the AI Agent
 
 #### Flow
 
-The AI Agent MUST validate the presented token as described in {{RFC6749}} as well as defined in {{RFC6750}}.
+The AI Agent MUST validate the presented token as described in {{OAUTH-FRAMEWORK}} as well as defined in {{RFC6750}}.
 
-If token introspection is required, the AI Agent MUST follow {{RFC7662}} as well as {{RFC9701}}.
+If token introspection is required, the AI Agent MUST follow {{OAUTH-TOKEN-INTROSPECTION}} as well as {{RFC9701}}.
 
-If the provided token is a JWT profiled token as defined in {{RFC9068}}, the AI Agent MUST follow the section 2 of this specification as part of the token validation.
+If the provided token is a JWT profiled token as defined in {{OAUTH-ACCESSTOKEN-JWT}}, the AI Agent MUST follow the section 2 of this specification as part of the token validation.
 
 If the AI Agent delegates its access control logic to a Policy decision point, it MUST follow {{OpenIDConnect.AuthZEN}} specification for requesting and receiving a decision for the access.
 
@@ -584,12 +561,12 @@ Based on the information collected as part of (E), the AI Agent is initiating an
 Such authorization request can allow to down, change or translate scope; enrich the authorization with new details based on the context; extend the time boundaries of the authorization; or change from a delegation mode to an impersonation mode and reversely.
 
 - If the AI Agent acts on its behalf as a system:
-  - If it does not want or need to refer to the previous context, it MUST start a client credential grant flow as described in section 1.3.4 of {{RFC6749}};
-  - If it does want or need to refer to the previous context, it MUST start a token exchange flow as described in {{RFC8693}}. The AI Agent will be able to decide in between obtaining tokens representing a Delegation or an Impersonation as described in section 1.1 of the specification.
+  - If it does not want or need to refer to the previous context, it MUST start a client credential grant flow as described in {{Section 1.3.4 of OAUTH-FRAMEWORK}};
+  - If it does want or need to refer to the previous context, it MUST start a token exchange flow as described in {{OAUTH-TOKEN-EXCHANGE}}. The AI Agent will be able to decide in between obtaining tokens representing a Delegation or an Impersonation as described in section 1.1 of the specification.
 - If the AI Agent acts on delegation by a user:
-  - If the AI Agent can interact and want to interact with the user through the client, it MUST start an authorization code grant flow as described in section 1.3.1 of {{RFC6749}};
+  - If the AI Agent can interact and want to interact with the user through the client, it MUST start an authorization code grant flow as described in {{Section 1.3.1 of OAUTH-FRAMEWORK}};
   - If the AI Agent cannot or does not want to interact with the user through the client, it MAY:
-    - Start a token exchange flow as described in {{RFC8693}}. The AI Agent will be able to decide in between obtaining tokens representing a Delegation or an Impersonation as described in section 1.1 of the specification.
+    - Start a token exchange flow as described in {{OAUTH-TOKEN-EXCHANGE}}. The AI Agent will be able to decide in between obtaining tokens representing a Delegation or an Impersonation as described in section 1.1 of the specification.
     - Start a client initated backchannel authorized request as described in {{OpenIDConnect.CIBA}}
 
 If the AI Agent knows that the underlying actions
