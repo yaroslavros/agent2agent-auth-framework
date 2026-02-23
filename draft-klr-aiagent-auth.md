@@ -227,7 +227,7 @@ In this document, Tools, Services, and Resources are treated as a single categor
 
 1. Optional: The User or System (e.g. a batch job or another Agent) provides an initial request or instruction to the AI Agent.
 2. The AI Agent provides the available context to the LLM. Context is implementation- and deployment-specific and may include User or System input, system prompts, Tool descriptions, prior Tool, Service and Resource outputs, and other relevant state.
-1. The LLM returns output to the AI Agent facilitating selection of Tools, Services or Resources to invoke.
+3. The LLM returns output to the AI Agent facilitating selection of Tools, Services or Resources to invoke.
 1. The AI Agent invokes one or more external endpoints of selected Tools, Services or Resources. A Tool endpoint may itself be implemented by another AI agent.
 1. The external endpoint returns a result of the operation to the AI Agent, which may sends the information as additional context to the Large Langugage Model, repeating steps 2-5 until the exit condition is reached and the task is completed.
 1. Optional: Once the exit condition is reached in step 5, the AI Agent may return a response to the User or System. The AI Agent may also return intermediate results or request additional input.
